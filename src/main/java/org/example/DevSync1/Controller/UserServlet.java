@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.awt.*;
@@ -31,15 +32,18 @@ public class UserServlet extends HttpServlet {
         String lname = request.getParameter("lastName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String role = request.getParameter("role");
 
         if ("update".equals(action) && id != null) {
-            User carToUpdate = new User();
-            carToUpdate.setId(Long.parseLong(id));
-            carToUpdate.setFirstName(fname);
-            carToUpdate.setLastName(lname);
-            carToUpdate.setEmail(email);
-            carToUpdate.setPassword(password);
-            userRepository.update(carToUpdate);
+            User user = new User();
+            user.setId(Long.parseLong(id));
+            user.setFirstName(fname);
+            user.setLastName(lname);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setRole(Role.valueOf(role));
+
+            userRepository.update(user);
             response.sendRedirect("users?action=update&message=User updated successfully");
         } else if ("delete".equals(action) && id != null) {
             userRepository.delete(Long.parseLong(id));
@@ -50,7 +54,7 @@ public class UserServlet extends HttpServlet {
             user.setLastName(lname);
             user.setEmail(email);
             user.setPassword(password);
-
+            user.setRole(Role.valueOf(role));
             userRepository.save(user);
             response.sendRedirect("users?action=add&message=User added successfully");
         }

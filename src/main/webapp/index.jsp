@@ -27,6 +27,7 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>Password</th>
+            <th>Role</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -42,6 +43,7 @@
             <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
             <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
             <td><%= (user.getPassword() != null) ? user.getPassword() : "N/A" %></td>
+            <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
             <td>
                 <!-- View icon that links to the user's details page -->
@@ -90,6 +92,15 @@
                                 <label for="password">Password:</label>
                                 <input type="text" class="form-control" name="password" value="<%= user.getPassword() %>">
                             </div>
+
+                            <div class="form-group">
+                                <label for="role">Role:</label>
+                                <select class="form-control" name="role" required>
+                                    <option value="USER">User</option>
+                                    <option value="MANAGER">Manager</option>
+                                </select>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
                     </div>
@@ -142,6 +153,14 @@
                         <div class="form-group">
                             <label for="password">Password:</label>
                             <input type="password" class="form-control" name="password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select class="form-control" name="role" required>
+                                <option value="USER">User</option>
+                                <option value="MANAGER">Manager</option>
+                            </select>
                         </div>
 
                         <button type="submit" class="btn btn-success">Add User</button>

@@ -19,7 +19,6 @@ public class UserRepository {
         em.close();
     }
 
-
     public List<User> findAll() {
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
@@ -27,7 +26,6 @@ public class UserRepository {
             em.close();
             return users;
     }
-
 
     public void delete(Long id) {
         EntityManager em = emf.createEntityManager();

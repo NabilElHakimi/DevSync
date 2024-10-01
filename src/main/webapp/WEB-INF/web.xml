@@ -8,10 +8,20 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>org.example.DevSync1.Controller.UserServlet</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ViewUserServlet</servlet-name>
+        <servlet-class>org.example.DevSync1.Controller.ViewUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewUserServlet</servlet-name>
+        <url-pattern>/viewUser</url-pattern>
+    </servlet-mapping>
+
 </web-app>
+
+
