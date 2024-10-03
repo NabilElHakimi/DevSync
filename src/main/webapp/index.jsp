@@ -31,6 +31,21 @@
 <div class="container mt-5">
     <h1 class="text-primary text-center mb-4">Users List</h1>
 
+    <!-- Success Message Alert -->
+    <%
+        String message = request.getParameter("message");
+        if (message != null && !message.isEmpty()) {
+    %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> <%= message %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <%
+        }
+    %>
+
     <button class="btn btn-success" style="margin-bottom: 2%" data-toggle="modal" data-target="#addUserModal">Add User</button>
 
     <table class="table table-bordered table-hover">
@@ -53,94 +68,38 @@
         %>
         <tr>
             <td><%= user.getId() %></td>
-                <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
+            <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
             <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
             <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
             <td>
-    <span class="password" title="<%= user.getPassword() %>">
-        <%= (user.getPassword() != null) ? "••••••••••••" : "N/A" %>
-    </span>
+                <span class="password" title="<%= user.getPassword() %>">
+                    <%= (user.getPassword() != null) ? "••••••••••••" : "N/A" %>
+                </span>
             </td>
             <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
             <td>
-                <!-- View icon that links to the user's details page -->
                 <a href="viewUser?id=<%= user.getId() %>" class="btn btn-info btn-sm mr-2" title="View User">
                     <i class="fas fa-eye"></i>
                 </a>
 
-                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal<%= user.getId() %>">
+                <!-- Trigger for Update Modal -->
+                <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= user.getId() %>, '<%= user.getFirstName() %>', '<%= user.getLastName() %>', '<%= user.getEmail() %>', '<%= user.getPassword() %>' , '<%= user.getRole() %>')">
                     <i class="fas fa-edit"></i>
                 </button>
 
                 <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= user.getId() %>)">
                     <i class="fas fa-trash-alt"></i>
                 </button>
-
             </td>
         </tr>
-        <!-- Update Modal for each user -->
-        <div class="modal fade" id="updateModal<%= user.getId() %>" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updateModalLabel">Update User</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Update user form -->
-                        <form action="users" method="post">
-                            <input type="hidden" name="id" value="<%= user.getId() %>">
-                            <input type="hidden" value="update" name="action">                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-
-                            <div class="form-group">
-                                <label for="firstName">First Name:</label>
-                                <input type="text" class="form-control" name="firstName" value="<%= user.getFirstName() %>">
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Last Name:</label>
-                                <input type="text" class="form-control" name="lastName" value="<%= user.getLastName() %>">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" name="email" value="<%= user.getEmail() %>">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="text" class="form-control" name="password" value="<%= user.getPassword() %>">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="role">Role:</label>
-                                <select class="form-control" name="role" required>
-                                    <option value="USER">User</option>
-                                    <option value="MANAGER">Manager</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <%
-            }
-        } else {
-        %>
+        <% } } else { %>
         <tr>
             <td colspan="6" class="text-center text-danger">No users found.</td>
         </tr>
-        <%
-            }
-        %>
+        <% } %>
         </tbody>
     </table>
-
 
     <!-- Add User Modal -->
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -153,11 +112,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Add user form -->
                     <form action="/DevSync1-1.0-SNAPSHOT/users" method="post">
-
                         <input type="hidden" value="create" name="add">
-
                         <div class="form-group">
                             <label for="firstName">First Name:</label>
                             <input type="text" class="form-control" name="firstName" required>
@@ -170,12 +126,10 @@
                             <label for="email">Email:</label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
-
                         <div class="form-group">
                             <label for="password">Password:</label>
                             <input type="password" class="form-control" name="password" required>
                         </div>
-
                         <div class="form-group">
                             <label for="role">Role:</label>
                             <select class="form-control" name="role" required>
@@ -183,14 +137,57 @@
                                 <option value="MANAGER">Manager</option>
                             </select>
                         </div>
-
                         <button type="submit" class="btn btn-success">Add User</button>
-
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Update User Modal -->
+    <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateUserForm" action="/DevSync1-1.0-SNAPSHOT/users" method="post">
+                        <input type="hidden" value="update" name="action">
+                        <input type="hidden" id="updateUserId" name="id">
+                        <div class="form-group">
+                            <label for="updateFirstName">First Name:</label>
+                            <input type="text" class="form-control" id="updateFirstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateLastName">Last Name:</label>
+                            <input type="text" class="form-control" id="updateLastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateEmail">Email:</label>
+                            <input type="email" class="form-control" id="updateEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updatePassword">Password:</label>
+                            <input type="text" class="form-control" id="updatePassword" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateRole">Role:</label>
+                            <select class="form-control" id="updateRole" name="role" required>
+                                <option value="USER">User</option>
+                                <option value="MANAGER">Manager</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -198,14 +195,15 @@
             <div class="modal-content">
                 <form action="users" method="post">
                     <div class="modal-header">
-                        <input type="hidden" value="delete" name="action">                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                        <input type="hidden" value="delete" name="action">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete this user?</p>
-                        <input type="hidden" name="id" id="deleteUserId" value="">
+                        <input type="hidden" id="userIdToDelete" name="id">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -218,19 +216,32 @@
 
 </div>
 
-<!-- Bootstrap JS and dependencies -->
+<!-- jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-        function confirmDelete(userId) {
-        document.getElementById('deleteUserId').value = userId;
+    function openUpdateModal(id, firstName, lastName, email, password,role) {
+        // Set the values in the update modal
+        document.getElementById('updateUserId').value = id;
+        document.getElementById('updateFirstName').value = firstName;
+        document.getElementById('updateLastName').value = lastName;
+        document.getElementById('updateEmail').value = email;
+        document.getElementById('updatePassword').value = password;
+        document.getElementById('updateRole').value = role;
+
+        // Show the modal
+        $('#updateUserModal').modal('show');
+    }
+
+    function confirmDelete(userId) {
+        // Set the user ID in the delete confirmation modal
+        document.getElementById('userIdToDelete').value = userId;
+
+        // Show the delete confirmation modal
         $('#deleteConfirmationModal').modal('show');
     }
 </script>
-
 </body>
 </html>
-
-
