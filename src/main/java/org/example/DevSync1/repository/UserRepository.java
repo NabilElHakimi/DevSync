@@ -11,12 +11,13 @@ public class UserRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-    public void save(User user) {
+    public boolean save(User user) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
         em.close();
+        return true;
     }
 
     public List<User> findAll() {
@@ -27,7 +28,7 @@ public class UserRepository {
             return users;
     }
 
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         User user = em.find(User.class, id);
@@ -36,15 +37,18 @@ public class UserRepository {
         }
         em.getTransaction().commit();
         em.close();
+
+        return true;
     }
 
 
-    public void update(User user) {
+    public boolean update(User user) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
         em.close();
+        return true;
     }
 
     public User findById(Long id) {

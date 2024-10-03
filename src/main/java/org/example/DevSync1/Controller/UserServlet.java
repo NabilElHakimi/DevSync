@@ -8,17 +8,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.repository.UserRepository;
+import org.example.DevSync1.service.UserService;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
 public class UserServlet extends HttpServlet {
-    private final UserRepository userRepository = new UserRepository();
+    private final UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
         request.setAttribute("users", users);
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         dispatcher.forward(request, response);
@@ -43,10 +44,10 @@ public class UserServlet extends HttpServlet {
             user.setPassword(password);
             user.setRole(Role.valueOf(role));
 
-            userRepository.update(user);
+            userService.update(user);
             response.sendRedirect("users?action=update&message=User updated successfully");
         } else if ("delete".equals(action) && id != null) {
-            userRepository.delete(Long.parseLong(id));
+            userService.delete(Long.parseLong(id));
             response.sendRedirect("users?action=delete&message=User deleted successfully");
         } else {
             User user = new User();
@@ -55,7 +56,7 @@ public class UserServlet extends HttpServlet {
             user.setEmail(email);
             user.setPassword(password);
             user.setRole(Role.valueOf(role));
-            userRepository.save(user);
+            userService.save(user);
             response.sendRedirect("users?action=add&message=User added successfully");
         }
     }

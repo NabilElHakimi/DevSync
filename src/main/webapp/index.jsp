@@ -14,6 +14,20 @@
 </head>
 <body>
 
+<style>
+    .password {
+        cursor: pointer;
+    }
+    .password:hover::after {
+        content: attr(title);
+        position: absolute;
+        background-color: #f9f9f9;
+        padding: 5px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
 <div class="container mt-5">
     <h1 class="text-primary text-center mb-4">Users List</h1>
 
@@ -39,10 +53,14 @@
         %>
         <tr>
             <td><%= user.getId() %></td>
-            <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
+                <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
             <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
             <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
-            <td><%= (user.getPassword() != null) ? user.getPassword() : "N/A" %></td>
+            <td>
+    <span class="password" title="<%= user.getPassword() %>">
+        <%= (user.getPassword() != null) ? "••••••••••••" : "N/A" %>
+    </span>
+            </td>
             <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
             <td>
@@ -51,11 +69,14 @@
                     <i class="fas fa-eye"></i>
                 </a>
 
-                <!-- Update button -->
-                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal<%= user.getId() %>">Update</button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal<%= user.getId() %>">
+                    <i class="fas fa-edit"></i>
+                </button>
 
-                <!-- Delete button -->
-                <button class="btn btn-danger" onclick="confirmDelete(<%= user.getId() %>)">Delete</button>
+                <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= user.getId() %>)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+
             </td>
         </tr>
         <!-- Update Modal for each user -->
