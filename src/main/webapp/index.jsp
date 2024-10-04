@@ -79,7 +79,7 @@
             <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
             <td>
-                <a href="viewUser?id=<%= user.getId() %>" class="btn btn-info btn-sm mr-2" title="View User">
+                <a href="user?id=<%= user.getId() %>" class="btn btn-info btn-sm mr-2" title="View User">
                     <i class="fas fa-eye"></i>
                 </a>
 
@@ -112,7 +112,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/DevSync1-1.0-SNAPSHOT/users" method="post">
+                    <form action="users" method="post">
                         <input type="hidden" value="create" name="add">
                         <div class="form-group">
                             <label for="firstName">First Name:</label>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="form-group">
                             <label for="password">Password:</label>
-                            <input type="password" class="form-control" name="password" required>
+                            <input type="text" class="form-control" name="password" required>
                         </div>
                         <div class="form-group">
                             <label for="role">Role:</label>
@@ -155,7 +155,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateUserForm" action="/DevSync1-1.0-SNAPSHOT/users" method="post">
+                    <form id="updateUserForm" action="users" method="post">
                         <input type="hidden" value="update" name="action">
                         <input type="hidden" id="updateUserId" name="id">
                         <div class="form-group">
