@@ -28,6 +28,6 @@
         @ManyToMany(mappedBy = "tasks")
         private List<Tag> tags;
 
-
+        
 
     }

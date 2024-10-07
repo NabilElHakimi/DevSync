@@ -1,5 +1,6 @@
 <%@ page import="org.example.DevSync1.entity.Task" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.example.DevSync1.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +37,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <jsp:include page="./../sidebar.jsp" />
+        <jsp:include page="../component/sidebar.jsp" />
         <!-- Main Content -->
         <main class="col-md-9">
             <div class="container mt-5">
@@ -64,8 +65,8 @@
                         <th>ID</th>
                         <th>Task Name</th>
                         <th>Description</th>
-                        <th>Due Date</th>
                         <th>Assigned To</th>
+                        <th>Due Date</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -77,19 +78,18 @@
                     %>
 
 <%--                    ===============================--%>
-
-
-
                     <tr>
                         <td><%= task.getId() %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
+                        <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
                         <td><%= task.getDueDate() != null ? task.getDueDate().toLocalDate() : "N/A" %></td>
                         <td>
                             <!-- Trigger for Update Modal -->
-                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
+                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
                                 <i class="fas fa-edit"></i>
                             </button>
+
                             <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
@@ -133,7 +133,23 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="assignedTo">Assigned To:</label>
-                                        <input type="text" class="form-control" name="assignedTo" required>
+                                        <select class="form-control" id="assignedTo" name="assignedTo" required>
+                                            <option value="">Select a User</option>
+                                            <%
+                                                List<User> availableUsers = (List<User>) request.getAttribute("users");
+                                                if (availableUsers != null) {
+                                                    for (User user : availableUsers) {
+                                            %>
+                                            <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
+                                            <%
+                                                }
+                                            } else {
+                                            %>
+                                            <option value="">No users available</option>
+                                            <%
+                                                }
+                                            %>
+                                        </select>
                                     </div>
                                     <button type="submit" class="btn btn-success">Add Task</button>
                                 </form>
@@ -141,6 +157,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Update Task Modal -->
                 <div class="modal fade" id="updateTaskModal" tabindex="-1" role="dialog" aria-labelledby="updateTaskModalLabel" aria-hidden="true">
@@ -170,7 +187,23 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="updateAssignedTo">Assigned To:</label>
-                                        <input type="text" class="form-control" id="updateAssignedTo" name="assignedTo" required>
+                                        <select class="form-control" id="updateAssignedTo" name="assignedTo" required>
+                                            <option value="">Select a User</option>
+                                            <%
+                                                List<User> users = (List<User>) request.getAttribute("users");
+                                                if (users != null) {
+                                                    for (User user : users) {
+                                            %>
+                                            <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
+                                            <%
+                                                }
+                                            } else {
+                                            %>
+                                            <option value="">No users available</option>
+                                            <%
+                                                }
+                                            %>
+                                        </select>
                                     </div>
                                     <button type="submit" class="btn btn-success">Update Task</button>
                                 </form>
@@ -178,6 +211,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Confirm Delete Modal -->
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -218,7 +252,7 @@
         document.getElementById('updateTaskName').value = title;
         document.getElementById('updateDescription').value = description;
         document.getElementById('updateDueDate').value = dueDate.split('T')[0]; // Extract date portion
-        document.getElementById('updateAssignedTo').value = assignedTo;
+        document.getElementById('updateAssignedTo').value = assignedTo; // Set assigned user ID
         $('#updateTaskModal').modal('show');
     }
 

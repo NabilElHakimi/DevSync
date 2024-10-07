@@ -2,6 +2,7 @@ package org.example.DevSync1.service;
 
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
+import org.example.DevSync1.entity.User;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.TokenRepository;
 
@@ -31,6 +32,13 @@ public class TaskService {
             taskRepository.delete(id);
         }
 
+        public User getAssignedUser(Long id){
+            return new UserService().findById(id);
+        }
+
+        public List<User> getAllUsers(){
+                return new UserService().findAll();
+        }
 
 
 }
