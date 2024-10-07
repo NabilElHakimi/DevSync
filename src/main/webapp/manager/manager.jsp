@@ -46,7 +46,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
+        <!-- Sidebar -->    
         <nav class="col-md-3 sidebar">
             <h4>Navigation</h4>
             <a href="users" class="active">Users</a>

@@ -3,61 +3,62 @@ package org.example.DevSync1.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.example.DevSync1.entity.User;
+import org.example.DevSync1.entity.Task;
 
 import java.util.List;
 
-public class UserRepository {
+public class TaskRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-    public boolean save(User user) {
+
+    public boolean save(Task task) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.persist(user);
+        em.persist(task);
         em.getTransaction().commit();
         em.close();
         return true;
     }
 
-    public List<User> findAll() {
-            EntityManager em = emf.createEntityManager();
-            em.getTransaction().begin();
-            List<User> users = em.createQuery("SELECT c FROM User c ORDER BY c.id DESC", User.class).getResultList();
-            em.close();
-            return users;
+
+    public boolean update(Task task) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.merge(task);
+        em.getTransaction().commit();
+        em.close();
+        return true;
     }
 
     public boolean delete(Long id) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        User user = em.find(User.class, id);
-        if (user != null) {
-            em.remove(user);
+        Task task = em.find(Task.class, id);
+        if (task != null) {
+            em.remove(task);
         }
         em.getTransaction().commit();
         em.close();
-
         return true;
     }
 
-
-    public boolean update(User user) {
+    public List<Task> findAll() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.merge(user);
+        List<Task> tasks = em.createQuery("SELECT c FROM Task c ORDER BY c.id DESC", Task.class).getResultList();
         em.getTransaction().commit();
         em.close();
-        return true;
+        return tasks;
     }
 
-
-    public User findById(Long id) {
+    public Task findById(Long id) {
         EntityManager em = emf.createEntityManager();
-        User user = em.find(User.class, id);
+        em.getTransaction().begin();
+        Task task = em.find(Task.class, id);
+        em.getTransaction().commit();
         em.close();
-        return user;
+        return task;
     }
-
 
 }
