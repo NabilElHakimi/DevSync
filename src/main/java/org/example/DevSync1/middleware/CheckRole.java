@@ -13,7 +13,7 @@ import org.example.DevSync1.repository.UserRepository;
 import java.io.IOException;
 
 @WebServlet(name = "checkRole" , urlPatterns = "/checkRole")
-public class CheckRoleServlet extends HttpServlet {
+public class CheckRole extends HttpServlet {
 
     private final UserRepository userRepository = new UserRepository();
 

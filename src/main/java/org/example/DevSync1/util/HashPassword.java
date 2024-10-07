@@ -15,4 +15,11 @@ public class HashPassword {
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
+
+
+    public boolean isPasswordCorrect(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
+
+
 }

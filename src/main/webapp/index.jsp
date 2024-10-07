@@ -79,7 +79,7 @@
             <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
             <td>
-                <a href="user?id=<%= user.getId() %>" class="btn btn-info btn-sm mr-2" title="View User">
+                <a href="checkRole?id=<%= user.getId() %>" class="btn btn-info btn-sm mr-2" title="View User">
                     <i class="fas fa-eye"></i>
                 </a>
 
