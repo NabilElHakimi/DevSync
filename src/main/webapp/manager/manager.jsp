@@ -46,14 +46,9 @@
 
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->    
-        <nav class="col-md-3 sidebar">
-            <h4>Navigation</h4>
-            <a href="users" class="active">Users</a>
-            <a href="#tasks">Tasks</a>
-            <a href="#tags">Tags</a>
-        </nav>
+        <!-- Sidebar -->
 
+        <jsp:include page="./sidebar.jsp" />
         <!-- Main Content -->
         <main class="col-md-9">
             <div class="container mt-5">
