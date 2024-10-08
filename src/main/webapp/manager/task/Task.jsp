@@ -1,6 +1,7 @@
 <%@ page import="org.example.DevSync1.entity.Task" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.DevSync1.entity.User" %>
+<%@ page import="org.example.DevSync1.entity.Tag" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,6 +68,7 @@
                         <th>Description</th>
                         <th>Assigned To</th>
                         <th>Due Date</th>
+                        <th>Tags</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -84,6 +86,21 @@
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
                         <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
                         <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
+                        <td>
+                            <%
+                                if (task.getTags() != null && !task.getTags().isEmpty()) {
+                                    for (Tag tag : task.getTags()) {
+                            %>
+                            <span class="badge badge-primary w-25"><%= tag.getName() %></span>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <span class="badge badge-warning">No Tags</span>
+                            <%
+                                }
+                            %>
+                        </td>
                         <td style="width: 10%">
                             <!-- Trigger for Update Modal -->
                             <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
@@ -108,55 +125,81 @@
 
                 <!-- Add Task Modal -->
                 <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="tasks" method="post">
-                                    <input type="hidden" value="create" name="action">
-                                    <div class="form-group">
-                                        <label for="taskName">Task Name:</label>
-                                        <input type="text" class="form-control" name="title" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="description">Description:</label>
-                                        <textarea class="form-control" name="description" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dueDate">Due Date:</label>
-                                        <input type="date" class="form-control" name="dueDate" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="assignedTo">Assigned To:</label>
-                                        <select class="form-control" id="assignedTo" name="assignedTo" required>
-                                            <option value="">Select a User</option>
-                                            <%
-                                                List<User> availableUsers = (List<User>) request.getAttribute("users");
-                                                if (availableUsers != null) {
-                                                    for (User user : availableUsers) {
-                                            %>
-                                            <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
-                                            <%
-                                                }
-                                            } else {
-                                            %>
-                                            <option value="">No users available</option>
-                                            <%
-                                                }
-                                            %>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-success">Add Task</button>
-                                </form>
-                            </div>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="tasks" method="post">
+                                <input type="hidden" value="create" name="action">
+
+                                <div class="form-group">
+                                    <label for="taskName">Task Name:</label>
+                                    <input type="text" class="form-control" name="title" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Description:</label>
+                                    <textarea class="form-control" name="description" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dueDate">Due Date:</label>
+                                    <input type="date" class="form-control" name="dueDate" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="assignedTo">Assigned To:</label>
+                                    <select class="form-control" id="assignedTo" name="assignedTo" required>
+                                        <option value="">Select a User</option>
+                                        <%
+                                            List<User> availableUsers = (List<User>) request.getAttribute("users");
+                                            if (availableUsers != null) {
+                                                for (User user : availableUsers) {
+                                        %>
+                                        <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
+                                        <%
+                                            }
+                                        } else {
+                                        %>
+                                        <option value="">No users available</option>
+                                        <%
+                                            }
+                                        %>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tags">Tags:</label>
+                                    <select class="form-control" id="tags" name="tags[]" multiple>
+                                        <%
+                                            List<Tag> availableTags = (List<Tag>) request.getAttribute("tags");
+                                            if (availableTags != null && !availableTags.isEmpty()) {
+                                                for (Tag tag : availableTags) {
+                                        %>x
+                                        <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
+                                        <%
+                                            }
+                                        } else {
+                                        %>
+                                        <option value="">No tags available</option>
+                                        <%
+                                            }
+                                        %>
+                                    </select>
+                                    <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple tags.</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Add Task</button>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
 
 
                 <!-- Update Task Modal -->
@@ -204,6 +247,27 @@
                                                 }
                                             %>
                                         </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="tags">Tags:</label>
+                                        <select class="form-control"     name="tags[]" multiple>
+                                            <%
+                                                List<Tag> newavailableTags = (List<Tag>) request.getAttribute("tags");
+                                                if (availableTags != null && !availableTags.isEmpty()) {
+                                                    for (Tag tag : newavailableTags) {
+                                            %>x
+                                            <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
+                                            <%
+                                                }
+                                            } else {
+                                            %>
+                                            <option value="">No tags available</option>
+                                            <%
+                                                }
+                                            %>
+                                        </select>
+                                        <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple tags.</small>
                                     </div>
                                     <button type="submit" class="btn btn-success">Update Task</button>
                                 </form>

@@ -23,6 +23,7 @@ public class ManagerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         List<User> users = userService.findAll();
+
         List<User> filteredUsers = users.stream()
                 .filter(user -> user.getRole().equals(Role.USER))
                 .collect(Collectors.toList());

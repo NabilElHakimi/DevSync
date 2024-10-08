@@ -92,7 +92,7 @@
                         <td><%= user.getId() %></td>
                         <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
                         <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
-                        <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
+                            <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
 
                         <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
@@ -155,7 +155,6 @@
                     </div>
                 </div>
 
-                <!-- Update User Modal -->
                 <!-- Update User Modal -->
                 <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">

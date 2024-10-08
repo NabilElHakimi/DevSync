@@ -69,4 +69,13 @@ public class TaskService {
 
         return true;
     }
+
+
+    public List<Tag> getAllTags(){
+            return new TagService().findAll();
+    }
+
+    public Tag getTagById(Long id){
+        return new TagService().findById(id);
+    }
 }

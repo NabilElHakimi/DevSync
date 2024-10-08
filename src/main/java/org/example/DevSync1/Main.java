@@ -23,17 +23,13 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        User user = new UserService().findById(2L);
-        Task task = new Task();
-        task.setAssignedTo(user);
-        task.setTitle("Task 1");
-        task.setDescription("Description 1");
-        task.setDueDate(LocalDate.now().plusDays(1));
+        List<Task> tasks = new TaskRepository().findAll();
 
-        List<Tag> tags = new TagService().findAll();
-        tags.remove(0);
-        task.setTags(tags);
-        new TaskService().updateTaskWithNewTags(8L , task , tags);
+        tasks.forEach(task -> {
+            task.getTags().forEach(tag -> {
+                System.out.println(tag.getName());
+            });
+        });
 
 
     }

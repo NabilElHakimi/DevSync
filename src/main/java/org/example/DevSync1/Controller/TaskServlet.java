@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
@@ -14,7 +15,9 @@ import org.example.DevSync1.service.TaskService;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "tasks", urlPatterns = "/tasks")
@@ -33,6 +36,9 @@ public class TaskServlet extends HttpServlet {
 
         request.setAttribute("users", filteredUsers);
 
+        List<Tag> tags = taskService.getAllTags();
+        request.setAttribute("tags" , tags);
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("manager/task/Task.jsp");
         dispatcher.forward(request, response);
     }
@@ -41,8 +47,6 @@ public class TaskServlet extends HttpServlet {
         String action = request.getParameter("action");
         String id = request.getParameter("id");
 
-        System.out.println("ID iSssssssssssssssssssssssssssssss" + id);
-
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String dueDateStr = request.getParameter("dueDate");
@@ -50,6 +54,15 @@ public class TaskServlet extends HttpServlet {
 
         if ("update".equals(action)) {
             Task task = new Task();
+
+            Optional.ofNullable(request.getParameterValues("tags[]"))
+                    .ifPresent(tags -> Arrays.stream(tags).forEach(tagId -> {
+                        Tag tag = taskService.getTagById(Long.valueOf(tagId));
+                        if (tag != null) {
+                            task.getTags().add(tag);
+                        }
+                    }));
+
             task.setId(Long.valueOf(id));
             task.setTitle(title);
             task.setDescription(description);
@@ -69,13 +82,24 @@ public class TaskServlet extends HttpServlet {
 
         } else {
             Task task = new Task();
+
+            Optional.ofNullable(request.getParameterValues("tags[]"))
+                    .ifPresent(tags -> Arrays.stream(tags).forEach(tagId -> {
+                        Tag tag = taskService.getTagById(Long.valueOf(tagId));
+                        if (tag != null) {
+                            task.getTags().add(tag);
+                        }
+                    }));
+
             task.setTitle(title);
             task.setDescription(description);
             task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
-
             task.setDueDate(LocalDate.parse(dueDateStr));
+
             taskService.save(task);
             response.sendRedirect("tasks?action=add&message=Task added successfully");
+
+
         }
     }
 
