@@ -33,65 +33,42 @@ public class TagServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    /*protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
         String id = request.getParameter("id");
 
-        String title = request.getParameter("title");
+        String tagName = request.getParameter("tagName");
         String description = request.getParameter("description");
-        String dueDateStr = request.getParameter("dueDate");
-        String assignedToId = request.getParameter("assignedTo");
 
         if ("update".equals(action)) {
-            Task task = new Task();
+            Tag tag = new Tag();
+            tag.setId(Long.valueOf(id));
+            tag.setName(tagName);
+            tag.setDescription(description);
 
-            Optional.ofNullable(request.getParameterValues("tags[]"))
-                    .ifPresent(tags -> Arrays.stream(tags).forEach(tagId -> {
-                        Tag tag = taskService.getTagById(Long.valueOf(tagId));
-                        if (tag != null) {
-                            task.getTags().add(tag);
-                        }
-                    }));
+            tagService.update(tag);
 
-            task.setId(Long.valueOf(id));
-            task.setTitle(title);
-            task.setDescription(description);
-            task.setDueDate(LocalDate.parse(dueDateStr));
-            task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
-            taskService.update(task);
-
-            response.sendRedirect("tasks?action=update&message=Task updated successfully");
+            response.sendRedirect("tags?action=update&message=Task updated successfully");
         }
 
         else if ("delete".equals(action)) {
 
-            taskService.delete(Long.valueOf(id));
-            System.err.println("waaaaaaaaa3333333333333b " + id);
+            tagService.delete(Long.valueOf(id));
 
-            response.sendRedirect("tasks?action=delete&message=Task deleted successfully");
+            response.sendRedirect("tags?action=delete&message=Task deleted successfully");
 
         } else {
-            Task task = new Task();
+            Tag tag = new Tag();
 
-            Optional.ofNullable(request.getParameterValues("tags[]"))
-                    .ifPresent(tags -> Arrays.stream(tags).forEach(tagId -> {
-                        Tag tag = taskService.getTagById(Long.valueOf(tagId));
-                        if (tag != null) {
-                            task.getTags().add(tag);
-                        }
-                    }));
 
-            task.setTitle(title);
-            task.setDescription(description);
-            task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
-            task.setDueDate(LocalDate.parse(dueDateStr));
-
-            taskService.save(task);
-            response.sendRedirect("tasks?action=add&message=Task added successfully");
+            tag.setName(tagName);
+            tag.setDescription(description);
+            tagService.save(tag);
+            response.sendRedirect("tags?action=add&message=Task added successfully");
 
 
         }
-    }*/
+    }
 
 
 

@@ -29,14 +29,11 @@ public class TagRepository {
         return true;
     }
 
-    public boolean delete(Tag tag) {
-
+    public boolean delete(Long id) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        Tag tag1 = em.find(Tag.class, tag.getId());
-        if (tag1 != null) {
-            em.remove(tag1);
-        }
+        Tag tag = em.find(Tag.class, id);
+        em.remove(tag);
         em.getTransaction().commit();
         em.close();
         return true;
