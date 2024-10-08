@@ -3,61 +3,58 @@ package org.example.DevSync1.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.example.DevSync1.entity.User;
+import org.example.DevSync1.entity.Tag;
 
 import java.util.List;
 
-public class UserRepository {
+public class TagRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-    public boolean save(User user) {
+    public boolean save(Tag tag) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.persist(user);
+        em.persist(tag);
         em.getTransaction().commit();
         em.close();
         return true;
     }
 
-    public List<User> findAll() {
-            EntityManager em = emf.createEntityManager();
-            em.getTransaction().begin();
-            List<User> users = em.createQuery("SELECT c FROM User c ORDER BY c.id DESC", User.class).getResultList();
-            em.close();
-            return users;
+    public boolean update(Tag tag) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.merge(tag);
+        em.getTransaction().commit();
+        em.close();
+        return true;
     }
 
     public boolean delete(Long id) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        User user = em.find(User.class, id);
-        if (user != null) {
-            em.remove(user);
-        }
+        Tag tag = em.find(Tag.class, id);
+        em.remove(tag);
         em.getTransaction().commit();
         em.close();
-
         return true;
     }
 
-
-    public boolean update(User user) {
+    public List<Tag> findAll() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.merge(user);
+        List<Tag> tags = em.createQuery("SELECT c FROM Tag c ORDER BY c.id DESC", Tag.class).getResultList();
         em.getTransaction().commit();
         em.close();
-        return true;
+        return tags;
     }
 
-
-    public User findById(Long id) {
+    public Tag findById(Long id) {
         EntityManager em = emf.createEntityManager();
-        User user = em.find(User.class, id);
+        em.getTransaction().begin();
+        Tag tag = em.find(Tag.class, id);
+        em.getTransaction().commit();
         em.close();
-        return user;
+        return tag;
     }
-
 
 }

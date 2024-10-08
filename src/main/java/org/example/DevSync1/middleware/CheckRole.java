@@ -21,10 +21,9 @@ public class CheckRole extends HttpServlet {
         String idParam = request.getParameter("id");
         User user = userRepository.findById(Long.valueOf(idParam));
         if(user != null) {
+            request.getSession().setAttribute("UserId" , idParam);
             if(user.getRole() == Role.MANAGER){
-                request.setAttribute("user", user);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("manager");
-                dispatcher.forward(request, response);
+                response.sendRedirect("manager");
             }
             else if(user.getRole() == Role.USER){
                 request.setAttribute("user", user);
