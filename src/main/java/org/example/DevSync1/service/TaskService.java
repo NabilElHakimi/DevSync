@@ -28,8 +28,9 @@ public class TaskService {
             taskRepository.update(task);
         }
 
-        public void delete(Long id) {
+        public boolean delete(Long id) {
             taskRepository.delete(id);
+            return true;
         }
 
         public User getAssignedUser(Long id){

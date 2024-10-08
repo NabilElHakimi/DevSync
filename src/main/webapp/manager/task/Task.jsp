@@ -83,8 +83,8 @@
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
                         <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
-                        <td><%= task.getDueDate() != null ? task.getDueDate().toLocalDate() : "N/A" %></td>
-                        <td>
+                        <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
+                        <td style="width: 10%">
                             <!-- Trigger for Update Modal -->
                             <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
                                 <i class="fas fa-edit"></i>
@@ -121,7 +121,7 @@
                                     <input type="hidden" value="create" name="action">
                                     <div class="form-group">
                                         <label for="taskName">Task Name:</label>
-                                        <input type="text" class="form-control" name="taskName" required>
+                                        <input type="text" class="form-control" name="title" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="description">Description:</label>
@@ -172,10 +172,10 @@
                             <div class="modal-body">
                                 <form id="updateTaskForm" action="tasks" method="post">
                                     <input type="hidden" value="update" name="action">
-                                    <input type="hidden" id="updateTaskId" name="id">
+                                    <input type="hidden" id="updateTaskId" name="id" value="">
                                     <div class="form-group">
                                         <label for="updateTaskName">Task Name:</label>
-                                        <input type="text" class="form-control" id="updateTaskName" name="taskName" required>
+                                        <input type="text" class="form-control" id="updateTaskName" name="title" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="updateDescription">Description:</label>

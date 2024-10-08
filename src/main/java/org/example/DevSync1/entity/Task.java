@@ -3,6 +3,7 @@
     import jakarta.persistence.*;
     import lombok.Data;
 
+    import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.util.List;
     @Entity
@@ -23,11 +24,11 @@
     
         private String description;
 
-        private LocalDateTime dueDate;
+        private LocalDate dueDate;
 
         @ManyToMany(mappedBy = "tasks")
         private List<Tag> tags;
 
-        
+
 
     }

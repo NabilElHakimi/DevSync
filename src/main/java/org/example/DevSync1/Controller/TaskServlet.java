@@ -8,15 +8,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.service.TaskService;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.time.LocalDate;
+
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "task", urlPatterns = "/task")
+@WebServlet(name = "tasks", urlPatterns = "/tasks")
 public class TaskServlet extends HttpServlet {
 
     private final TaskService taskService = new TaskService();
@@ -26,23 +27,56 @@ public class TaskServlet extends HttpServlet {
         request.setAttribute("tasks", tasks);
 
         List<User> users = taskService.getAllUsers();
-        Set<Long> assignedUserIds = new HashSet<>();
-
-        for (Task task : tasks) {
-            User assignedUser = taskService.getAssignedUser(task.getId());
-            if (assignedUser != null) {
-                assignedUserIds.add(assignedUser.getId());
-            }
-        }
-
-        List<User> availableUsers = users.stream()
-                .filter(user -> !assignedUserIds.contains(user.getId()))
+        List<User> filteredUsers = users.stream()
+                .filter(user -> user.getRole().equals(Role.USER))
                 .collect(Collectors.toList());
 
-        request.setAttribute("users", availableUsers);
+        request.setAttribute("users", filteredUsers);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("manager/task/Task.jsp");
         dispatcher.forward(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String action = request.getParameter("action");
+        String id = request.getParameter("id");
+
+        System.out.println("ID iSssssssssssssssssssssssssssssss" + id);
+
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String dueDateStr = request.getParameter("dueDate");
+        String assignedToId = request.getParameter("assignedTo");
+
+        if ("update".equals(action)) {
+            Task task = new Task();
+            task.setId(Long.valueOf(id));
+            task.setTitle(title);
+            task.setDescription(description);
+            task.setDueDate(LocalDate.parse(dueDateStr));
+            task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
+            taskService.update(task);
+
+            response.sendRedirect("tasks?action=update&message=Task updated successfully");
+        }
+
+        else if ("delete".equals(action)) {
+
+            taskService.delete(Long.valueOf(id));
+            System.err.println("waaaaaaaaa3333333333333b " + id);
+
+            response.sendRedirect("tasks?action=delete&message=Task deleted successfully");
+
+        } else {
+            Task task = new Task();
+            task.setTitle(title);
+            task.setDescription(description);
+            task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
+
+            task.setDueDate(LocalDate.parse(dueDateStr));
+            taskService.save(task);
+            response.sendRedirect("tasks?action=add&message=Task added successfully");
+        }
     }
 
 

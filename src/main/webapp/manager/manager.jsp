@@ -99,7 +99,7 @@
                         <td>
 
                             <!-- Trigger for Update Modal -->
-                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= user.getId() %>, '<%= user.getFirstName() %>', '<%= user.getLastName() %>', '<%= user.getEmail() %>', '<%= user.getPassword() %>' , '<%= user.getRole() %>')">
+                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= user.getId() %>, '<%= user.getFirstName() %>', '<%= user.getLastName() %>', '<%= user.getEmail() %>' , '<%= user.getRole() %>')">
                                 <i class="fas fa-edit"></i>
                             </button>   
 
@@ -156,6 +156,7 @@
                 </div>
 
                 <!-- Update User Modal -->
+                <!-- Update User Modal -->
                 <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -169,6 +170,7 @@
                                 <form id="updateUserForm" action="users" method="post">
                                     <input type="hidden" value="update" name="action">
                                     <input type="hidden" id="updateUserId" name="id">
+
                                     <div class="form-group">
                                         <label for="updateFirstName">First Name:</label>
                                         <input type="text" class="form-control" id="updateFirstName" name="firstName" required>
@@ -182,6 +184,12 @@
                                         <input type="email" class="form-control" id="updateEmail" name="email" required>
                                     </div>
 
+                                    <!-- Add Password Field -->
+                                   <%-- <div class="form-group">
+                                        <label for="updatePassword">Password:</label>
+                                        <input type="password" class="form-control" id="updatePassword" name="password" required>
+                                    </div>
+--%>
                                     <div class="form-group">
                                         <label for="updateRole">Role:</label>
                                         <select class="form-control" id="updateRole" name="role" required>
@@ -195,6 +203,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -242,10 +251,12 @@
         document.getElementById('updateFirstName').value = firstName;
         document.getElementById('updateLastName').value = lastName;
         document.getElementById('updateEmail').value = email;
-        document.getElementById('updatePassword').value = password;
+        // document.getElementById('updatePassword').value = password;  // Correctly populate the password
         document.getElementById('updateRole').value = role;
+
         $('#updateUserModal').modal('show');
     }
+
 </script>
 
 </body>
