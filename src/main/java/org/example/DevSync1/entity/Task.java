@@ -3,11 +3,13 @@ package org.example.DevSync1.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
 @Entity
-@Data
 @Table(name = "tasks")
+@Data
 public class Task {
 
     @Id
@@ -23,11 +25,14 @@ public class Task {
 
     private String description;
 
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
-    @ManyToMany(mappedBy = "tasks")
-    private List<Tag> tags;
-
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tags_tasks",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
 
 }
