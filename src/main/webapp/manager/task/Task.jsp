@@ -86,12 +86,12 @@
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
                         <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
                         <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
-                        <td>
+                        <td class="w-25">
                             <%
                                 if (task.getTags() != null && !task.getTags().isEmpty()) {
                                     for (Tag tag : task.getTags()) {
                             %>
-                            <span class="badge badge-primary w-25"><%= tag.getName() %></span>
+                            <span class="badge badge-primary"><%= tag.getName() %></span>
                             <%
                                 }
                             } else {

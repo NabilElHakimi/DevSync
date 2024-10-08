@@ -13,8 +13,8 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public boolean delete(Tag tag) {
-        return tagRepository.delete(tag);
+    public boolean delete(Long id) {
+        return tagRepository.delete(id);
     }
 
     public List<Tag> findAll() {
@@ -23,6 +23,10 @@ public class TagService {
 
     public Tag findById(Long id) {
         return tagRepository.findById(id);
+    }
+
+    public boolean update(Tag tag) {
+        return tagRepository.update(tag);
     }
 
 }
