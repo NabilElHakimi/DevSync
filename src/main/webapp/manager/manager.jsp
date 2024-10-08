@@ -47,13 +47,8 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 sidebar">
-            <h4>Navigation</h4>
-            <a href="users" class="active">Users</a>
-            <a href="#tasks">Tasks</a>
-            <a href="#tags">Tags</a>
-        </nav>
 
+        <jsp:include page="component/sidebar.jsp" />
         <!-- Main Content -->
         <main class="col-md-9">
             <div class="container mt-5">
@@ -83,7 +78,6 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
-                        <th>Password</th>
                         <th>Role</th>
                         <th>Actions</th>
                     </tr>
@@ -98,18 +92,14 @@
                         <td><%= user.getId() %></td>
                         <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
                         <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
-                        <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
-                        <td>
-                            <span class="password" title="<%= user.getPassword() %>">
-                                <%= (user.getPassword() != null) ? "••••••••••••" : "N/A" %>
-                            </span>
-                        </td>
+                            <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
+
                         <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 
                         <td>
 
                             <!-- Trigger for Update Modal -->
-                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= user.getId() %>, '<%= user.getFirstName() %>', '<%= user.getLastName() %>', '<%= user.getEmail() %>', '<%= user.getPassword() %>' , '<%= user.getRole() %>')">
+                            <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= user.getId() %>, '<%= user.getFirstName() %>', '<%= user.getLastName() %>', '<%= user.getEmail() %>' , '<%= user.getRole() %>')">
                                 <i class="fas fa-edit"></i>
                             </button>   
 
@@ -152,10 +142,6 @@
                                         <input type="email" class="form-control" name="email" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="password">Password:</label>
-                                        <input type="text" class="form-control" name="password" required>
-                                    </div>
-                                    <div class="form-group">
                                         <label for="role">Role:</label>
                                         <select class="form-control" name="role" required>
                                             <option value="USER">User</option>
@@ -183,6 +169,7 @@
                                 <form id="updateUserForm" action="users" method="post">
                                     <input type="hidden" value="update" name="action">
                                     <input type="hidden" id="updateUserId" name="id">
+
                                     <div class="form-group">
                                         <label for="updateFirstName">First Name:</label>
                                         <input type="text" class="form-control" id="updateFirstName" name="firstName" required>
@@ -195,10 +182,13 @@
                                         <label for="updateEmail">Email:</label>
                                         <input type="email" class="form-control" id="updateEmail" name="email" required>
                                     </div>
-                                    <div class="form-group">
+
+                                    <!-- Add Password Field -->
+                                   <%-- <div class="form-group">
                                         <label for="updatePassword">Password:</label>
-                                        <input type="text" class="form-control" id="updatePassword" name="password" required>
+                                        <input type="password" class="form-control" id="updatePassword" name="password" required>
                                     </div>
+--%>
                                     <div class="form-group">
                                         <label for="updateRole">Role:</label>
                                         <select class="form-control" id="updateRole" name="role" required>
@@ -213,7 +203,7 @@
                     </div>
                 </div>
 
-                <!-- Delete Confirmation Modal -->
+
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -260,10 +250,12 @@
         document.getElementById('updateFirstName').value = firstName;
         document.getElementById('updateLastName').value = lastName;
         document.getElementById('updateEmail').value = email;
-        document.getElementById('updatePassword').value = password;
+        // document.getElementById('updatePassword').value = password;  // Correctly populate the password
         document.getElementById('updateRole').value = role;
+
         $('#updateUserModal').modal('show');
     }
+
 </script>
 
 </body>

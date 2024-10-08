@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.DevSync1.enums.Role;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -29,5 +31,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
+    
 }
