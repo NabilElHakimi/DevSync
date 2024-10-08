@@ -26,4 +26,5 @@ public class Tag {
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
     private List<Task> tasks;
+    
 }

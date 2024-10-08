@@ -5,37 +5,35 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
+import org.example.DevSync1.repository.TagRepository;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.TokenRepository;
 import org.example.DevSync1.repository.UserRepository;
+import org.example.DevSync1.service.TagService;
+import org.example.DevSync1.service.TaskService;
+import org.example.DevSync1.service.UserService;
 import org.example.DevSync1.util.HashPassword;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
-        // Hash the password before storing it
+        User user = new UserService().findById(2L);
+        Task task = new Task();
+        task.setAssignedTo(user);
+        task.setTitle("Task 1");
+        task.setDescription("Description 1");
+        task.setDueDate(LocalDate.now().plusDays(1));
 
-        User user1 = new UserRepository().findById(1L);
-
-        System.out.println("========================================================================");
-        System.out.println("User: " + user1.getFirstName() + " " + user1.getLastName());
-        System.out.println("========================================================================");
-
-
-        Task newTask = new Task();
-        newTask.setTitle("Complete Projeczzzzzzt");
-        newTask.setDescription("Finish the project by the end of the week");
-        newTask.setDueDate(LocalDate.now().plusDays(5));
-        newTask.setAssignedTo(user1);
-        newTask.setId(2L);
-        new TaskRepository().update(newTask);
-
-
-        System.out.println("Task updated successfully");
+        List<Tag> tags = new TagService().findAll();
+        tags.remove(0);
+        task.setTags(tags);
+        new TaskService().updateTaskWithNewTags(8L , task , tags);
 
 
     }

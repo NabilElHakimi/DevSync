@@ -11,7 +11,6 @@ public class TagRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-
     public boolean save(Tag tag) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
