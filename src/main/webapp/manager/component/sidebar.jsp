@@ -3,4 +3,5 @@
     <a href="manager" class="active">Users</a>
     <a href="tasks">Tasks</a>
     <a href="tags">Tags</a>
+    <a href="users">Log out</a>
 </nav>

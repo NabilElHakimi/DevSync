@@ -1,8 +1,6 @@
 package org.example.DevSync1.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.List;
 
 @Entity
@@ -25,6 +23,7 @@ public class Tag {
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
+
     private List<Task> tasks;
     
 }
