@@ -27,8 +27,7 @@ public class CheckRole extends HttpServlet {
             }
             else if(user.getRole() == Role.USER){
                 request.setAttribute("user", user);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("user");
-                dispatcher.forward(request, response);
+                response.sendRedirect("user");
             }
         }
 

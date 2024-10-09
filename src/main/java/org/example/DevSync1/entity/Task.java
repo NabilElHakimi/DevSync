@@ -16,6 +16,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User createdBy;
+
     @ManyToOne
     @JoinColumn(name = "assigned_to", nullable = false)
     private User assignedTo;
