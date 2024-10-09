@@ -12,7 +12,6 @@ public class TaskRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-
     public boolean save(Task task) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
