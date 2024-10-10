@@ -78,14 +78,15 @@
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
                     <tr>
-                        <th>ID</th>
+                        <th>Created By</th>
                         <th>Task Name</th>
                         <th>Description</th>
                         <th>Assigned To</th>
                         <th>Due Date</th>
                         <th>Tags</th>
-                        <th >Status</th>
+                        <th>Status</th>
                         <th>Actions</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -97,7 +98,7 @@
 
 <%--                    ===============================--%>
                     <tr>
-                        <td><%= task.getId() %></td>
+                        <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
                         <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
@@ -265,6 +266,20 @@
                                             %>
                                         </select>
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <label for="status">Status  :</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="">Select a User</option>
+                                            <option value="InProgress" selected>InProgress</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Completed">Completed</option>
+
+                                        </select>
+                                    </div>
+
+
 
                                     <div class="form-group">
                                         <label for="tags">Tags:</label>

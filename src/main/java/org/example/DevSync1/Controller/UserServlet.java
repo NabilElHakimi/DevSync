@@ -9,6 +9,7 @@
     import org.example.DevSync1.entity.Tag;
     import org.example.DevSync1.entity.Task;
     import org.example.DevSync1.entity.User;
+    import org.example.DevSync1.enums.Status;
     import org.example.DevSync1.service.TaskService;
     import org.example.DevSync1.service.UserService;
 
@@ -67,7 +68,6 @@
                             }
                         }));
 
-                task.setCreatedBy(userService.findById(idParam));
                 task.setId(Long.valueOf(id));
                 task.setTitle(title);
                 task.setDescription(description);
@@ -101,6 +101,7 @@
                 task.setDescription(description);
                 task.setDueDate(LocalDate.parse(dueDateStr));
                 task.setAssignedTo(userService.findById(idParam));
+                task.setStatus(Status.InProgress);
                 taskService.save(task);
 
                 response.sendRedirect("user?action=add&message=Task added successfully");

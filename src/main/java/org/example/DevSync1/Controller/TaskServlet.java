@@ -54,6 +54,7 @@ public class TaskServlet extends HttpServlet {
         String description = request.getParameter("description");
         String dueDateStr = request.getParameter("dueDate");
         String assignedToId = request.getParameter("assignedTo");
+        String status = request.getParameter("status");
 
         String idParam = request.getSession().getAttribute("UserId").toString();
 
@@ -71,6 +72,7 @@ public class TaskServlet extends HttpServlet {
 
 
             task.setCreatedBy(taskService.getAssignedUser(Long.valueOf(idParam)));
+            task.setStatus(Status.valueOf(status));
             task.setId(Long.valueOf(id));
             task.setTitle(title);
             task.setDescription(description);
