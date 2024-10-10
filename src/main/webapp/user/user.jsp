@@ -113,7 +113,7 @@
               <!-- Trigger for Update Modal -->
 
               <% if (userExist.getId() == task.getAssignedTo().getId()) { %>
-              <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
+              <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
                 <i class="fas fa-edit"></i>
               </button>
 
@@ -146,7 +146,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="tasks" method="post">
+                <form action="user" method="post">
                   <input type="hidden" value="create" name="action">
 
                   <div class="form-group">
@@ -164,26 +164,6 @@
                     <input type="date" class="form-control" name="dueDate" required>
                   </div>
 
-                  <div class="form-group">
-                    <label for="assignedTo">Assigned To:</label>
-                    <select class="form-control" id="assignedTo" name="assignedTo" required>
-                      <option value="">Select a User</option>
-                      <%
-                        List<User> availableUsers = (List<User>) request.getAttribute("users");
-                        if (availableUsers != null) {
-                          for (User user : availableUsers) {
-                      %>
-                      <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
-                      <%
-                        }
-                      } else {
-                      %>
-                      <option value="">No users available</option>
-                      <%
-                        }
-                      %>
-                    </select>
-                  </div>
 
                   <div class="form-group">
                     <label for="tags">Tags:</label>
@@ -192,7 +172,7 @@
                         List<Tag> availableTags = (List<Tag>) request.getAttribute("tags");
                         if (availableTags != null && !availableTags.isEmpty()) {
                           for (Tag tag : availableTags) {
-                      %>x
+                      %>
                       <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
                       <%
                         }
@@ -225,7 +205,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form id="updateTaskForm" action="tasks" method="post">
+                <form id="updateTaskForm" action="user" method="post">
                   <input type="hidden" value="update" name="action">
                   <input type="hidden" id="updateTaskId" name="id" value="">
                   <div class="form-group">
@@ -239,26 +219,6 @@
                   <div class="form-group">
                     <label for="updateDueDate">Due Date:</label>
                     <input type="date" class="form-control" id="updateDueDate" name="dueDate" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="updateAssignedTo">Assigned To:</label>
-                    <select class="form-control" id="updateAssignedTo" name="assignedTo" required>
-                      <option value="">Select a User</option>
-                      <%
-                        List<User> users = (List<User>) request.getAttribute("users");
-                        if (users != null) {
-                          for (User user : users) {
-                      %>
-                      <option value="<%= user.getId() %>"><%= user.getFirstName() + " " + user.getLastName() %></option>
-                      <%
-                        }
-                      } else {
-                      %>
-                      <option value="">No users available</option>
-                      <%
-                        }
-                      %>
-                    </select>
                   </div>
 
                   <div class="form-group">
@@ -328,7 +288,6 @@
     document.getElementById('updateTaskName').value = title;
     document.getElementById('updateDescription').value = description;
     document.getElementById('updateDueDate').value = dueDate.split('T')[0]; // Extract date portion
-    document.getElementById('updateAssignedTo').value = assignedTo; // Set assigned user ID
     $('#updateTaskModal').modal('show');
   }
 

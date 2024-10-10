@@ -44,6 +44,9 @@ public class TaskServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long idParam = Long.parseLong(request.getSession().getAttribute("UserId").toString());
+
+
         String action = request.getParameter("action");
         String id = request.getParameter("id");
 
@@ -63,6 +66,7 @@ public class TaskServlet extends HttpServlet {
                         }
                     }));
 
+            task.setCreatedBy(taskService.getAssignedUser(idParam));
             task.setId(Long.valueOf(id));
             task.setTitle(title);
             task.setDescription(description);
@@ -91,6 +95,7 @@ public class TaskServlet extends HttpServlet {
                         }
                     }));
 
+            task.setCreatedBy(taskService.getAssignedUser(idParam));
             task.setTitle(title);
             task.setDescription(description);
             task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
