@@ -18,9 +18,9 @@
     import java.util.List;
     import java.util.Optional;
 
-
     @WebServlet(name = "user" , urlPatterns = "user")
     public class UserServlet extends HttpServlet {
+
         private final UserService userService   = new UserService();
         private final TaskService taskService = new TaskService();
 
@@ -47,8 +47,7 @@
 
         protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-            long idParam = Long.parseLong(request.getSession().getAttribute("UserId").toString());
-
+            Long idParam = Long.parseLong(request.getSession().getAttribute("UserId").toString());
 
             String action = request.getParameter("action");
             String id = request.getParameter("id");
@@ -102,7 +101,7 @@
                 task.setDescription(description);
                 task.setDueDate(LocalDate.parse(dueDateStr));
                 task.setAssignedTo(userService.findById(idParam));
-                taskService.update(task);
+                taskService.save(task);
 
                 response.sendRedirect("user?action=add&message=Task added successfully");
 

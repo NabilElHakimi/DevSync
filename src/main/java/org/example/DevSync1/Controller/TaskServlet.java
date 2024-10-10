@@ -10,7 +10,9 @@ import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
+import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.service.TaskService;
+import org.example.DevSync1.service.UserService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -44,8 +46,6 @@ public class TaskServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long idParam = Long.parseLong(request.getSession().getAttribute("UserId").toString());
-
 
         String action = request.getParameter("action");
         String id = request.getParameter("id");
@@ -54,6 +54,9 @@ public class TaskServlet extends HttpServlet {
         String description = request.getParameter("description");
         String dueDateStr = request.getParameter("dueDate");
         String assignedToId = request.getParameter("assignedTo");
+
+        String idParam = request.getSession().getAttribute("UserId").toString();
+
 
         if ("update".equals(action)) {
             Task task = new Task();
@@ -66,7 +69,8 @@ public class TaskServlet extends HttpServlet {
                         }
                     }));
 
-            task.setCreatedBy(taskService.getAssignedUser(idParam));
+
+            task.setCreatedBy(taskService.getAssignedUser(Long.valueOf(idParam)));
             task.setId(Long.valueOf(id));
             task.setTitle(title);
             task.setDescription(description);
@@ -79,10 +83,12 @@ public class TaskServlet extends HttpServlet {
 
         else if ("delete".equals(action)) {
 
-            taskService.delete(Long.valueOf(id));
-            System.err.println("waaaaaaaaa3333333333333b " + id);
+            if(taskService.delete(Long.valueOf(id))) {
+                response.sendRedirect("tasks?action=delete&message=Task deleted successfully");
+            } else {
+                response.sendRedirect("tasks?action=delete&messageErr=Task not found");
+            }
 
-            response.sendRedirect("tasks?action=delete&message=Task deleted successfully");
 
         } else {
             Task task = new Task();
@@ -95,16 +101,18 @@ public class TaskServlet extends HttpServlet {
                         }
                     }));
 
-            task.setCreatedBy(taskService.getAssignedUser(idParam));
+            task.setCreatedBy(taskService.getAssignedUser(Long.valueOf(idParam)));
             task.setTitle(title);
             task.setDescription(description);
             task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
             task.setDueDate(LocalDate.parse(dueDateStr));
-
-            taskService.save(task);
-            response.sendRedirect("tasks?action=add&message=Task added successfully");
-
-
+            task.setStatus(Status.InProgress);
+            if(!taskService.save(task)){
+                response.sendRedirect("tasks?action=add&messageErr=Task due date should be greater than today");
+            }
+            else {
+                response.sendRedirect("tasks?action=add&message=Task added successfully");
+            }
         }
     }
 

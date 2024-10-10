@@ -44,12 +44,27 @@
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
+
                 <%
                     String message = request.getParameter("message");
                     if (message != null && !message.isEmpty()) {
                 %>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>Success!</strong> <%= message %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <%
+                    }
+                %>
+
+                <%
+                    String messageErr = request.getParameter("messageErr");
+                    if (messageErr != null && !messageErr.isEmpty()) {
+                %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Field!</strong> <%= messageErr %>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -69,6 +84,7 @@
                         <th>Assigned To</th>
                         <th>Due Date</th>
                         <th>Tags</th>
+                        <th >Status</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -101,6 +117,7 @@
                                 }
                             %>
                         </td>
+                        <td><span class="badge badge-secondary"><%= task.getStatus() %></span></td>
                         <td style="width: 10%">
                             <!-- Trigger for Update Modal -->
                             <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">

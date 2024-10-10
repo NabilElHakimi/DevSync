@@ -6,6 +6,7 @@ import org.example.DevSync1.entity.User;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.UserRepository; // Import the UserRepository if necessary
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TaskService {
@@ -20,8 +21,12 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public void save(Task task) {
-        taskRepository.save(task);
+    public boolean save(Task task) {
+        if (LocalDate.now().isBefore(task.getDueDate())) {
+            taskRepository.save(task);
+            return true;
+        }
+        return false;
     }
 
     public void update(Task task) {
@@ -29,8 +34,7 @@ public class TaskService {
     }
 
     public boolean delete(Long id) {
-        taskRepository.delete(id);
-        return true;
+        return taskRepository.delete(id);
     }
 
     public User getAssignedUser(Long id) {
