@@ -9,6 +9,7 @@ import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserService {
 
@@ -29,12 +30,14 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll().stream()
+                .peek(this::getTokenUser).collect(Collectors.toList());
     }
 
     public User findById(Long id){
-
-        return userRepository.findById(id);
+        User user = userRepository.findById(id);
+        getTokenUser(user);
+        return user;
     }
 
     public List<Task> getTasks(){
@@ -67,6 +70,9 @@ public class UserService {
         }
     }
 
-
-
+    public boolean ChangeTask(Long id){
+        new TaskService().changeTask(id);
+        return true;
+    }
+    
 }

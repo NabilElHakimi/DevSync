@@ -5,6 +5,7 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
+import org.example.DevSync1.repository.TokenRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,4 +71,19 @@ public class TaskService {
             update(task);
         }
     }
+
+    public boolean changeTask(Long id){
+        Task task = getTaskById(id);
+        if(task != null && !task.isChanged()){
+            new TokenService().findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
+                token.setDailyTokens(token.getDailyTokens() - 1);
+                new TokenService().update(token);
+            });
+            task.setChanged(true);
+            update(task);
+            return true;
+        }
+        return false;
+    }
+
 }

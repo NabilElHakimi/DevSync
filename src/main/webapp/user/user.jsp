@@ -35,23 +35,23 @@
 </head>
 <body>
 
-<a href="users" class="bg-danger p-2 text-white " >Log out</a>
-
+<a href="users" class="bg-danger p-2 text-white">Log out</a>
 
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
 
-<%--    <jsp:include page="../component/sidebar.jsp" />--%>
+    <%-- <jsp:include page="../component/sidebar.jsp" /> --%>
 
-    <% User userExist = (User) request.getAttribute("user") ; %>
+    <% User userExist = (User) request.getAttribute("user"); %>
 
     <!-- Main Content -->
     <main class="col-md-12">
       <div class="container mt-5">
         <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
-        <h2 class="text-black text-center mb-4">Name :  <%= userExist.getLastName() + " " + userExist.getFirstName() %></h2>
+        <h2 class="text-black text-center mb-4">Name: <%= userExist.getLastName() + " " + userExist.getFirstName() %></h2>
+        <h3 class="text-danger text-center mb-4">Tokens Available Today: <%= userExist.getToken().getDailyTokens() %></h3>
 
         <%
           String message = request.getParameter("message");
@@ -90,10 +90,10 @@
           %>
 
           <tr>
-            <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
+            <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName() + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
             <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
             <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
-            <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
+            <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
             <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
             <td class="w-25">
               <%
@@ -123,19 +123,15 @@
                 <i class="fas fa-trash-alt"></i>
               </button>
 
-              <% if(userExist.getToken().getDailyTokens() > 0 ) {%>
+              <% if (userExist.getToken().getDailyTokens() > 0) { %>
               <button class="btn btn-danger btn-sm" onclick="dislikeTask(<%= task.getId() %>)">
                 <i class="fas fa-thumbs-down"></i>
               </button>
-
               <% } %>
 
               <% } %>
-
             </td>
           </tr>
-
-          <%--                    ============================================--%>
 
           <% } } else { %>
           <tr>
@@ -174,7 +170,6 @@
                     <input type="date" class="form-control" name="dueDate" required>
                   </div>
 
-
                   <div class="form-group">
                     <label for="tags">Tags:</label>
                     <select class="form-control" id="tags" name="tags[]" multiple>
@@ -203,7 +198,6 @@
           </div>
         </div>
 
-
         <!-- Update Task Modal -->
         <div class="modal fade" id="updateTaskModal" tabindex="-1" role="dialog" aria-labelledby="updateTaskModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
@@ -215,98 +209,65 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form id="updateTaskForm" action="user" method="post">
+                <form action="user" method="post">
+                  <input type="hidden" id="updateTaskId" name="id">
                   <input type="hidden" value="update" name="action">
-                  <input type="hidden" id="updateTaskId" name="id" value="">
+
                   <div class="form-group">
-                    <label for="updateTaskName">Task Name:</label>
+                    <label for="taskName">Task Name:</label>
                     <input type="text" class="form-control" id="updateTaskName" name="title" required>
                   </div>
+
                   <div class="form-group">
-                    <label for="updateDescription">Description:</label>
-                    <textarea class="form-control" id="updateDescription" name="description" required></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="updateDueDate">Due Date:</label>
-                    <input type="date" class="form-control" id="updateDueDate" name="dueDate" required>
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" id="updateTaskDescription" name="description" required></textarea>
                   </div>
 
                   <div class="form-group">
-                    <label for="tags">Tags:</label>
-                    <select class="form-control"     name="tags[]" multiple>
-                      <%
-                        List<Tag> newavailableTags = (List<Tag>) request.getAttribute("tags");
-                        if (availableTags != null && !availableTags.isEmpty()) {
-                          for (Tag tag : newavailableTags) {
-                      %>x
-                      <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
-                      <%
-                        }
-                      } else {
-                      %>
-                      <option value="">No tags available</option>
-                      <%
-                        }
-                      %>
-                    </select>
-                    <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple tags.</small>
+                    <label for="dueDate">Due Date:</label>
+                    <input type="date" class="form-control" id="updateTaskDueDate" name="dueDate" required>
                   </div>
-                  <button type="submit" class="btn btn-success">Update Task</button>
+
+                  <button type="submit" class="btn btn-primary">Update Task</button>
                 </form>
               </div>
             </div>
           </div>
         </div>
 
-
-        <!-- Confirm Delete Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                Are you sure you want to delete <span id="deleteTaskName"></span>?
-              </div>
-              <div class="modal-footer">
-                <form id="deleteTaskForm" action="tasks" method="post">
-                  <input type="hidden" name="id" id="deleteTaskId">
-                  <input type="hidden" value="delete" name="action">
-                  <button type="submit" class="btn btn-danger">Delete</button>
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- jQuery and Bootstrap JS -->
+<!-- jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
-  function openUpdateModal(id, title, description, dueDate, assignedTo) {
+  function openUpdateModal(id, title, description, dueDate) {
     document.getElementById('updateTaskId').value = id;
     document.getElementById('updateTaskName').value = title;
-    document.getElementById('updateDescription').value = description;
-    document.getElementById('updateDueDate').value = dueDate.split('T')[0]; // Extract date portion
+    document.getElementById('updateTaskDescription').value = description;
+    document.getElementById('updateTaskDueDate').value = dueDate;
     $('#updateTaskModal').modal('show');
   }
 
-  function confirmDelete(id, name) {
-    document.getElementById('deleteTaskId').value = id;
-    document.getElementById('deleteTaskName').innerText = name;
-    $('#confirmDeleteModal').modal('show');
+  function confirmDelete(taskId, taskName) {
+    const confirmed = confirm(`Are you sure you want to delete the task: ${taskName}?`);
+    if (confirmed) {
+      window.location.href = `user?action=delete&id=${taskId}`;
+    }
+  }
+
+  function dislikeTask(taskId) {
+    const confirmed = confirm(`Are you sure you want to dislike this task? This will consume a token.`);
+    if (confirmed) {
+      window.location.href = `user?dislike=` + taskId;
+    }
   }
 </script>
+
 </body>
 </html>
-```
