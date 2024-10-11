@@ -4,6 +4,7 @@ import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.repository.TokenRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TokenService {
 
@@ -30,7 +31,7 @@ public class TokenService {
         return tokenRepository.findById(id);
     }
 
-    public Token findByUserId(Long id) {
+    public Optional<Token> findByUserId(Long id) {
         return tokenRepository.findByUserId(id);
     }
 }

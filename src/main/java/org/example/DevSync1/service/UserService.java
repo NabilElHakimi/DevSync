@@ -4,10 +4,14 @@ import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Role;
+import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserService {
@@ -31,9 +35,9 @@ public class UserService {
     public List<User> findAll() {
         return userRepository.findAll().stream().peek(user -> {
 
-            user.setToken(tokenService.findByUserId(user.getId()));
+            user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
 
-            if(user.getToken() == null){
+            if(user.getToken() == null && user.getRole().equals(Role.USER)){
 
                 Token token = new Token();
                 token.setUser(user);
@@ -42,7 +46,7 @@ public class UserService {
                 tokenService.save(token);
 
             }else {
-                    if(!user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
+                if(user.getRole().equals(Role.USER) && !user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
 
                         user.getToken().setDailyTokens(2);
                         user.getToken().setUpdatedAt(LocalDate.now().atStartOfDay());

@@ -78,6 +78,7 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Tokens Available</th>
                         <th>Role</th>
                         <th>Actions</th>
                     </tr>
@@ -93,8 +94,10 @@
                         <td><%= (user.getFirstName() != null) ? user.getFirstName() : "N/A" %></td>
                         <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
                             <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
+                        <td><%= (user.getToken() != null) ? user.getToken().getDailyTokens() : "N/A" %></td>
 
                         <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
+
 
                         <td>
 

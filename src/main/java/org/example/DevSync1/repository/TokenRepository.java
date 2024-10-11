@@ -8,6 +8,7 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TokenRepository {
 
@@ -64,15 +65,20 @@ public class TokenRepository {
         return token;
     }
 
-    public Token findByUserId(Long id) {
-
+    public Optional<Token> findByUserId(Long id) {
         EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
-        Token token = em.createQuery("SELECT c FROM Token c WHERE c.user.id = :id", Token.class).setParameter("id", id).getSingleResult();
+
+        List<Token> tokens = em.createQuery("SELECT c FROM Token c WHERE c.user.id = :id", Token.class)
+                .setParameter("id", id)
+                .getResultList();
+
         em.getTransaction().commit();
         em.close();
-        return token;
+
+        return tokens.isEmpty() ? Optional.empty() : Optional.of(tokens.get(0));
     }
+
 
 
 
