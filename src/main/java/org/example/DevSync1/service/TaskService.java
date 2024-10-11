@@ -13,6 +13,7 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository = new TaskRepository();
+    private final TokenService tokenService = new TokenService();
 
     public List<Task> getAllTasks() {
          return  taskRepository.findAll();
@@ -75,9 +76,9 @@ public class TaskService {
     public boolean changeTask(Long id){
         Task task = getTaskById(id);
         if(task != null && !task.isChanged()){
-            new TokenService().findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
+            tokenService.findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
                 token.setDailyTokens(token.getDailyTokens() - 1);
-                new TokenService().update(token);
+                tokenService.update(token);
             });
             task.setChanged(true);
             update(task);
