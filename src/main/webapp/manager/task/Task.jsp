@@ -275,21 +275,21 @@
                                             <option value="InProgress" selected>InProgress</option>
                                             <option value="Pending">Pending</option>
                                             <option value="Completed">Completed</option>
-
                                         </select>
                                     </div>
 
-
-
                                     <div class="form-group">
                                         <label for="tags">Tags:</label>
-                                        <select class="form-control"     name="tags[]" multiple>
+                                        <select class="form-control" name="tags[]" multiple>
                                             <%
                                                 List<Tag> newavailableTags = (List<Tag>) request.getAttribute("tags");
-                                                if (availableTags != null && !availableTags.isEmpty()) {
+                                                List<Integer> selectedTagIds = (List<Integer>) request.getAttribute("selectedTagIds"); // Get the selected tag IDs
+
+                                                if (newavailableTags != null && !newavailableTags.isEmpty()) {
                                                     for (Tag tag : newavailableTags) {
-                                            %>x
-                                            <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
+                                                        boolean isSelected = selectedTagIds != null && selectedTagIds.contains(tag.getId());
+                                            %>
+                                            <option value="<%= tag.getId() %>" <%= isSelected ? "selected" : "" %>><%= tag.getName() %></option>
                                             <%
                                                 }
                                             } else {
@@ -301,6 +301,7 @@
                                         </select>
                                         <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple tags.</small>
                                     </div>
+
                                     <button type="submit" class="btn btn-success">Update Task</button>
                                 </form>
                             </div>
