@@ -5,24 +5,16 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
-import org.example.DevSync1.repository.UserRepository; // Import the UserRepository if necessary
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TaskService {
 
     private final TaskRepository taskRepository = new TaskRepository();
 
     public List<Task> getAllTasks() {
-         return  taskRepository.findAll().stream()
-                 .peek(task -> {
-                        if (LocalDate.now().isAfter(task.getDueDate())) {
-                            task.setStatus(Status.Completed);
-                            update(task);
-                        }
-                 }).collect(Collectors.toList());
+         return  taskRepository.findAll();
 
     }
 
@@ -72,11 +64,10 @@ public class TaskService {
         return new TagService().findById(id);
     }
 
-    public Task CheckTask(Task task){
+    public void CheckTask(Task task){
         if (LocalDate.now().isAfter(task.getDueDate())) {
             task.setStatus(Status.Completed);
             update(task);
         }
-        return task;
     }
 }
