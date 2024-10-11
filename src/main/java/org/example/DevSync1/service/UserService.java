@@ -51,7 +51,6 @@ public class UserService {
         return new TagService().findAll();
     }
 
-
     public User getTokenforUser(User user){
         user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
 

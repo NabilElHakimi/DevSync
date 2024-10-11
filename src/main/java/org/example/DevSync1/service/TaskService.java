@@ -18,8 +18,6 @@ public class TaskService {
     public List<Task> getAllTasks() {
          return  taskRepository.findAll().stream()
                  .peek(task -> {
-                        task.setTags(task.getTags().stream().map(tag -> new TagService().findById(tag.getId())).collect(Collectors.toList()));
-
                         if (LocalDate.now().isAfter(task.getDueDate())) {
                             task.setStatus(Status.Completed);
                             update(task);
@@ -72,5 +70,13 @@ public class TaskService {
 
     public Tag getTagById(Long id){
         return new TagService().findById(id);
+    }
+
+    public Task CheckTask(Task task){
+        if (LocalDate.now().isAfter(task.getDueDate())) {
+            task.setStatus(Status.Completed);
+            update(task);
+        }
+        return task;
     }
 }
