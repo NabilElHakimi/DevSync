@@ -14,8 +14,8 @@ import java.util.List;
 public class User {
 
     public User() { }
-    @Id
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -34,5 +34,8 @@ public class User {
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
+
+    @OneToOne
+    private Token token;
     
 }

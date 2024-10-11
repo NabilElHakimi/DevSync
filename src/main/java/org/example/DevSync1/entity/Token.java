@@ -13,18 +13,15 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
     private User user;
-
-    @Column(nullable = false)
-    private int availableTokens;
 
     @Column(nullable = false)
     private int dailyTokens;
 
     @Column(nullable = false)
-    private int monthlyTokens;
+    private int monthUsed;
 
-    private LocalDateTime lastUpdated;
+    private LocalDateTime updatedAt;
+
 }

@@ -44,6 +44,7 @@
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
+
                 <%
                     String message = request.getParameter("message");
                     if (message != null && !message.isEmpty()) {
@@ -58,18 +59,34 @@
                     }
                 %>
 
+                <%
+                    String messageErr = request.getParameter("messageErr");
+                    if (messageErr != null && !messageErr.isEmpty()) {
+                %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Field!</strong> <%= messageErr %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <%
+                    }
+                %>
+
                 <button class="btn btn-success" style="margin-bottom: 2%" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
 
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
                     <tr>
-                        <th>ID</th>
+                        <th>Created By</th>
                         <th>Task Name</th>
                         <th>Description</th>
                         <th>Assigned To</th>
                         <th>Due Date</th>
                         <th>Tags</th>
+                        <th>Status</th>
                         <th>Actions</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -81,7 +98,7 @@
 
 <%--                    ===============================--%>
                     <tr>
-                        <td><%= task.getId() %></td>
+                        <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
                         <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
@@ -101,6 +118,7 @@
                                 }
                             %>
                         </td>
+                        <td><span class="badge badge-secondary"><%= task.getStatus() %></span></td>
                         <td style="width: 10%">
                             <!-- Trigger for Update Modal -->
                             <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
@@ -249,15 +267,29 @@
                                         </select>
                                     </div>
 
+
+                                    <div class="form-group">
+                                        <label for="status">Status  :</label>
+                                        <select class="form-control" id="status" name="status" required>
+                                            <option value="">Select a User</option>
+                                            <option value="InProgress" selected>InProgress</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Completed">Completed</option>
+                                        </select>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="tags">Tags:</label>
-                                        <select class="form-control"     name="tags[]" multiple>
+                                        <select class="form-control" name="tags[]" multiple>
                                             <%
                                                 List<Tag> newavailableTags = (List<Tag>) request.getAttribute("tags");
-                                                if (availableTags != null && !availableTags.isEmpty()) {
+                                                List<Integer> selectedTagIds = (List<Integer>) request.getAttribute("selectedTagIds"); // Get the selected tag IDs
+
+                                                if (newavailableTags != null && !newavailableTags.isEmpty()) {
                                                     for (Tag tag : newavailableTags) {
-                                            %>x
-                                            <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
+                                                        boolean isSelected = selectedTagIds != null && selectedTagIds.contains(tag.getId());
+                                            %>
+                                            <option value="<%= tag.getId() %>" <%= isSelected ? "selected" : "" %>><%= tag.getName() %></option>
                                             <%
                                                 }
                                             } else {
@@ -269,6 +301,7 @@
                                         </select>
                                         <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) button to select multiple tags.</small>
                                     </div>
+
                                     <button type="submit" class="btn btn-success">Update Task</button>
                                 </form>
                             </div>

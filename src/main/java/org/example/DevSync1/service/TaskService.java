@@ -3,34 +3,53 @@ package org.example.DevSync1.service;
 import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.UserRepository; // Import the UserRepository if necessary
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TaskService {
 
     private final TaskRepository taskRepository = new TaskRepository();
 
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+         return  taskRepository.findAll().stream()
+                 .peek(task -> {
+                        task.setTags(task.getTags().stream().map(tag -> new TagService().findById(tag.getId())).collect(Collectors.toList()));
+
+                        if (LocalDate.now().isAfter(task.getDueDate())) {
+                            task.setStatus(Status.Completed);
+                            update(task);
+                        }
+                 }).collect(Collectors.toList());
+
     }
 
     public Task getTaskById(Long id) {
         return taskRepository.findById(id);
     }
 
-    public void save(Task task) {
-        taskRepository.save(task);
+    public boolean save(Task task) {
+        if (LocalDate.now().plusDays(3).isBefore(task.getDueDate())) {
+            taskRepository.save(task);
+            return true;
+        }
+        return false;
     }
 
-    public void update(Task task) {
-        taskRepository.update(task);
+    public boolean update(Task task) {
+        if (LocalDate.now().plusDays(3).isBefore(task.getDueDate())) {
+            taskRepository.update(task);
+            return true;
+        }
+        return false;
     }
 
     public boolean delete(Long id) {
-        taskRepository.delete(id);
-        return true;
+        return taskRepository.delete(id);
     }
 
     public User getAssignedUser(Long id) {
@@ -44,30 +63,6 @@ public class TaskService {
     public boolean addTaskWithTags(Task task, List<Tag> tags) {
         task.setTags(tags);
         return taskRepository.save(task);
-    }
-
-    public boolean updateTaskWithNewTags(Long taskId, Task updatedTask , List<Tag> newTags) {
-
-        Task existingTask = taskRepository.findById(taskId);
-
-        if (existingTask == null) {
-            return false;
-        }
-
-        existingTask.getTags().clear();
-
-        existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
-        existingTask.setDueDate(updatedTask.getDueDate());
-        existingTask.setAssignedTo(updatedTask.getAssignedTo());
-
-        for (Tag tag : newTags) {
-            existingTask.getTags().add(tag);
-        }
-
-        taskRepository.update(existingTask);
-
-        return true;
     }
 
 
