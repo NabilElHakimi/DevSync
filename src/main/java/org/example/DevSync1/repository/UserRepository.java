@@ -1,18 +1,15 @@
 package org.example.DevSync1.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import org.example.DevSync1.config.Config;
 import org.example.DevSync1.entity.User;
 
 import java.util.List;
 
 public class UserRepository {
 
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
-
     public boolean save(User user) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
@@ -21,15 +18,16 @@ public class UserRepository {
     }
 
     public List<User> findAll() {
-            EntityManager em = emf.createEntityManager();
-            em.getTransaction().begin();
-            List<User> users = em.createQuery("SELECT c FROM User c ORDER BY c.id DESC", User.class).getResultList();
-            em.close();
-            return users;
+        EntityManager em = Config.getEntityManager();
+        em.getTransaction().begin();
+        List<User> users = em.createQuery("SELECT u FROM User u ORDER BY u.id DESC", User.class).getResultList();
+        em.getTransaction().commit();
+        em.close();
+        return users;
     }
 
     public boolean delete(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         User user = em.find(User.class, id);
         if (user != null) {
@@ -37,13 +35,11 @@ public class UserRepository {
         }
         em.getTransaction().commit();
         em.close();
-
         return true;
     }
 
-
     public boolean update(User user) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
@@ -51,13 +47,10 @@ public class UserRepository {
         return true;
     }
 
-
     public User findById(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = Config.getEntityManager();
         User user = em.find(User.class, id);
         em.close();
         return user;
     }
-
-
 }

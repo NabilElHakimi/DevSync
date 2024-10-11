@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.repository.UserRepository;
@@ -23,6 +24,13 @@ public class UsersServlet extends HttpServlet {
     private HashPassword hashPassword = new HashPassword();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false); // Get the current session, if it exists
+        if (session != null) {
+            // Remove the UserId attribute from the session
+            session.removeAttribute("UserId");
+        }
+
         List<User> users = userService.findAll();
         request.setAttribute("users", users);
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
