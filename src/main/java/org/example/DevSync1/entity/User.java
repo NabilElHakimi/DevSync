@@ -14,8 +14,8 @@ import java.util.List;
 public class User {
 
     public User() { }
-    @Id
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

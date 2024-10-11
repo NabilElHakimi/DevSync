@@ -1,5 +1,7 @@
 package org.example.DevSync1.service;
 
+import org.example.DevSync1.entity.Tag;
+import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.repository.UserRepository;
 
@@ -27,6 +29,14 @@ public class UserService {
 
     public User findById(Long id){
         return userRepository.findById(id);
+    }
+
+    public List<Task> getTasks(){
+        return new TaskService().getAllTasks();
+    }
+
+    public List<Tag> getTags(){
+        return new TagService().findAll();
     }
 
 

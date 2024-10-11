@@ -2,6 +2,7 @@ package org.example.DevSync1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.example.DevSync1.enums.Status;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,8 +18,14 @@ public class Task {
     private Long id;
 
     @ManyToOne
+    private User createdBy;
+
+    @ManyToOne
     @JoinColumn(name = "assigned_to", nullable = false)
     private User assignedTo;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(nullable = false)
     private String title;
@@ -33,7 +40,6 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-
     private List<Tag> tags = new ArrayList<>();
 
 }
