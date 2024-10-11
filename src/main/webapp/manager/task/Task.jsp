@@ -43,8 +43,7 @@
         <main class="col-md-9">
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
-
-
+                
                 <%
                     String message = request.getParameter("message");
                     if (message != null && !message.isEmpty()) {
