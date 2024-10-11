@@ -1,7 +1,5 @@
 package org.example.DevSync1.util;
 
-import org.example.DevSync1.entity.User;
-import org.example.DevSync1.service.TokenService;
 import org.example.DevSync1.service.UserService;
 
 import java.util.concurrent.Executors;
@@ -24,7 +22,7 @@ public class CheckTokenScheduler {
     }
 
     public void CheckToken(){
-            user.findAll().forEach(user::getTokenforUser);
+            user.findAll().forEach(user::getTokenUser);
     }
 
 }

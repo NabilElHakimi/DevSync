@@ -5,14 +5,10 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
-import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class UserService {
 
@@ -33,14 +29,12 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll().stream()
-                .peek(this::getTokenforUser)
-                .collect(Collectors.toList());
+        return userRepository.findAll();
     }
 
     public User findById(Long id){
 
-        return getTokenforUser(userRepository.findById(id));
+        return userRepository.findById(id);
     }
 
     public List<Task> getTasks(){
@@ -51,7 +45,7 @@ public class UserService {
         return new TagService().findAll();
     }
 
-    public User getTokenforUser(User user){
+    public void getTokenUser(User user){
         user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
 
         if(user.getToken() == null && user.getRole().equals(Role.USER)){
@@ -71,7 +65,6 @@ public class UserService {
 
             }
         }
-        return user;
     }
 
 
