@@ -11,20 +11,19 @@ import java.util.List;
 
 public class TokenRepository {
 
-    private final  EntityManager em;
 
-    public TokenRepository() {
-        this.em = Config.getEntityManager();
-    }
-    public boolean save(Token token) {
+    public Token save(Token token) {
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         em.persist(token);
         em.getTransaction().commit();
         em.close();
-        return true;
+        return token;
     }
 
     public boolean update(Token token) {
+        EntityManager em = Config.getEntityManager();
+
         em.getTransaction().begin();
         em.merge(token);
         em.getTransaction().commit();
@@ -34,6 +33,7 @@ public class TokenRepository {
 
     public boolean delete(Token token) {
 
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         Token token1 = em.find(Token.class, token.getId());
         if (token1 != null) {
@@ -45,6 +45,8 @@ public class TokenRepository {
     }
 
     public List<Token> findAll() {
+
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         List<Token> tokens = em.createQuery("SELECT c FROM Token c ORDER BY c.id DESC", Token.class).getResultList();
         em.getTransaction().commit();
@@ -53,11 +55,25 @@ public class TokenRepository {
     }
 
     public Token findById(Long id) {
+
+        EntityManager em = Config.getEntityManager();
         em.getTransaction().begin();
         Token token = em.find(Token.class, id);
         em.getTransaction().commit();
         em.close();
         return token;
     }
+
+    public Token findByUserId(Long id) {
+
+        EntityManager em = Config.getEntityManager();
+        em.getTransaction().begin();
+        Token token = em.createQuery("SELECT c FROM Token c WHERE c.user.id = :id", Token.class).setParameter("id", id).getSingleResult();
+        em.getTransaction().commit();
+        em.close();
+        return token;
+    }
+
+
 
 }

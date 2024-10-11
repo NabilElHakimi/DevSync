@@ -9,7 +9,7 @@ public class TokenService {
 
     private final TokenRepository tokenRepository = new TokenRepository();
 
-    public boolean save(Token token) {
+    public Token save(Token token) {
         return tokenRepository.save(token);
     }
 
@@ -28,5 +28,9 @@ public class TokenService {
 
     public Token findById(Long id) {
         return tokenRepository.findById(id);
+    }
+
+    public Token findByUserId(Long id) {
+        return tokenRepository.findByUserId(id);
     }
 }
