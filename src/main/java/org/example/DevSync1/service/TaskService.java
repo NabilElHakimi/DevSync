@@ -52,12 +52,6 @@ public class TaskService {
         return new UserService().findAll();
     }
 
-    public boolean addTaskWithTags(Task task, List<Tag> tags) {
-        task.setTags(tags);
-        return taskRepository.save(task);
-    }
-
-
     public List<Tag> getAllTags(){
             return new TagService().findAll();
     }
