@@ -79,7 +79,7 @@
             <th>Due Date</th>
             <th>Tags</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th style="width: 13%">Actions</th>
           </tr>
           </thead>
           <tbody>
@@ -122,7 +122,15 @@
               <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
                 <i class="fas fa-trash-alt"></i>
               </button>
-                <% } %>
+
+              <% if(userExist.getToken().getDailyTokens() > 0 ) {%>
+              <button class="btn btn-danger btn-sm" onclick="dislikeTask(<%= task.getId() %>)">
+                <i class="fas fa-thumbs-down"></i>
+              </button>
+
+              <% } %>
+
+              <% } %>
 
             </td>
           </tr>

@@ -33,32 +33,14 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll().stream().peek(user -> {
-
-            user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
-
-            if(user.getToken() == null && user.getRole().equals(Role.USER)){
-
-                Token token = new Token();
-                token.setUser(user);
-                token.setDailyTokens(2);
-                token.setUpdatedAt(LocalDate.now().atStartOfDay());
-                tokenService.save(token);
-
-            }else {
-                if(user.getRole().equals(Role.USER) && !user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
-
-                        user.getToken().setDailyTokens(2);
-                        user.getToken().setUpdatedAt(LocalDate.now().atStartOfDay());
-                        tokenService.update(user.getToken());
-
-                    }
-            }
-        }).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .peek(this::getTokenforUser)
+                .collect(Collectors.toList());
     }
 
     public User findById(Long id){
-        return userRepository.findById(id);
+
+        return getTokenforUser(userRepository.findById(id));
     }
 
     public List<Task> getTasks(){
@@ -69,6 +51,29 @@ public class UserService {
         return new TagService().findAll();
     }
 
+
+    public User getTokenforUser(User user){
+        user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
+
+        if(user.getToken() == null && user.getRole().equals(Role.USER)){
+
+            Token token = new Token();
+            token.setUser(user);
+            token.setDailyTokens(2);
+            token.setUpdatedAt(LocalDate.now().atStartOfDay());
+            tokenService.save(token);
+
+        }else {
+            if(user.getRole().equals(Role.USER) && !user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
+
+                user.getToken().setDailyTokens(2);
+                user.getToken().setUpdatedAt(LocalDate.now().atStartOfDay());
+                tokenService.update(user.getToken());
+
+            }
+        }
+        return user;
+    }
 
 
 
