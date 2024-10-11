@@ -14,7 +14,6 @@ public class Token {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
@@ -22,5 +21,7 @@ public class Token {
 
     @Column(nullable = false)
     private int monthUsed;
+
+    private LocalDateTime updatedAt;
 
 }
