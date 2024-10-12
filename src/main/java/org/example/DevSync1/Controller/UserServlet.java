@@ -46,7 +46,6 @@
                 }
             }
 
-
             RequestDispatcher dispatcher = request.getRequestDispatcher("user/user.jsp");
             dispatcher.forward(request, response);
 
@@ -87,10 +86,10 @@
 
             else if ("delete".equals(action)) {
 
-                taskService.delete(Long.valueOf(id));
-                System.err.println("waaaaaaaaa3333333333333b " + id);
+                taskService.delete(Long.valueOf(id) , "USER");
 
                 response.sendRedirect("user?action=delete&message=Task deleted successfully");
+
 
             } else {
                 Task task = new Task();

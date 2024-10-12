@@ -9,6 +9,8 @@ import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserService {
@@ -34,10 +36,16 @@ public class UserService {
                 .peek(this::getTokenUser).collect(Collectors.toList());
     }
 
-    public User findById(Long id){
-        User user = userRepository.findById(id);
-        getTokenUser(user);
-        return user;
+    public User findById(Long id) {
+        Optional<User> getUser = userRepository.findById(id);
+
+        if (getUser.isPresent()) {
+            User user = getUser.get();
+            getTokenUser(user);
+            return user;
+        } else {
+            throw new NoSuchElementException("User with id " + id + " not found");
+        }
     }
 
     public List<Task> getTasks(){

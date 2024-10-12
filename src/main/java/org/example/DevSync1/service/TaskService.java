@@ -1,14 +1,19 @@
 package org.example.DevSync1.service;
 
+import lombok.Value;
 import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
+import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.TokenRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class TaskService {
 
@@ -40,9 +45,35 @@ public class TaskService {
         return false;
     }
 
-    public boolean delete(Long id) {
-        return taskRepository.delete(id);
+    public boolean delete(Long id , String role) {
+
+        Task task = taskRepository.findById(id);
+
+        if (task != null) {
+            if (task.getCreatedBy().equals(task.getAssignedTo()) && task.getCreatedBy().getRole().equals(Role.USER)) {
+                return taskRepository.delete(id);
+            }
+            else if (role.equals(Role.MANAGER.toString())) {
+                return taskRepository.delete(id);
+            } else {
+                task.setAccepted(false);
+
+                Optional<Token> user = new TokenService().findByUserId(task.getAssignedTo().getId());
+                if (user.isPresent() && user.get().getDailyTokens() > 0 && user.get().getMonthUsed() != 0 ) {
+                    user.get().setDailyTokens(user.get().getDailyTokens() - 1);
+                    user.get().setMonthUsed(LocalDate.now().getMonthValue());
+                    if(new TokenRepository().update(user.get())){
+                        return taskRepository.update(task);
+
+                    };
+                }
+            }
+        }
+
+        return false;
     }
+
+
 
     public User getAssignedUser(Long id) {
         return new UserService().findById(id);

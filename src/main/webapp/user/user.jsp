@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.DevSync1.entity.User" %>
 <%@ page import="org.example.DevSync1.entity.Tag" %>
+<%@ page import="java.time.LocalDate" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +36,9 @@
 </head>
 <body>
 
-<a href="users" class="bg-danger p-2 text-white">Log out</a>
+<% Long sessionUserId = Long.valueOf(request.getSession().getAttribute("UserId").toString()); %>
+
+  <a href="users" class="bg-danger p-2 text-white">Log out</a>
 
 <div class="container-fluid">
   <div class="row">
@@ -114,20 +117,35 @@
             <td style="width: 10%">
               <!-- Trigger for Update Modal -->
 
-              <% if (userExist.getId() == task.getAssignedTo().getId()) { %>
-              <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
-                <i class="fas fa-edit"></i>
-              </button>
+              <% if (task.getCreatedBy().getId().equals(sessionUserId)) { %>
+                <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
+                  <i class="fas fa-edit"></i>
+                </button>
 
-              <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
-                <i class="fas fa-trash-alt"></i>
-              </button>
+                <% if(userExist.getToken().getDailyTokens() > 0
+                        && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue() && !task.isChanged()){ %>
+                <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
 
-              <% if (userExist.getToken().getDailyTokens() > 0) { %>
+                <% }     %>
+
+              <% } %>
+
+              <%
+
+                if (userExist.getToken() != null
+                        && task.getAssignedTo() != null
+                        && task.getAssignedTo().getToken() != null
+                        && userExist.getToken().getDailyTokens() > 0
+                        && !task.isChanged()
+                        && task.getAssignedTo().getToken().getMonthUsed() == 0
+                        && sessionUserId.equals(userExist.getId())) {
+              %>
+
               <button class="btn btn-danger btn-sm" onclick="dislikeTask(<%= task.getId() %>)">
                 <i class="fas fa-thumbs-down"></i>
               </button>
-              <% } %>
 
               <% } %>
             </td>
@@ -240,6 +258,30 @@
   </div>
 </div>
 
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <span id="deleteTaskName"></span>?
+      </div>
+      <div class="modal-footer">
+        <form id="deleteTaskForm" action="user" method="post">
+          <input type="hidden" name="id" id="deleteTaskId">
+          <input type="hidden" value="delete" name="action">
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -254,11 +296,10 @@
     $('#updateTaskModal').modal('show');
   }
 
-  function confirmDelete(taskId, taskName) {
-    const confirmed = confirm(`Are you sure you want to delete the task: ${taskName}?`);
-    if (confirmed) {
-      window.location.href = `user?action=delete&id=${taskId}`;
-    }
+  function confirmDelete(id, name) {
+    document.getElementById('deleteTaskId').value = id;
+    document.getElementById('deleteTaskName').innerText = name;
+    $('#confirmDeleteModal').modal('show');
   }
 
   function dislikeTask(taskId) {

@@ -27,7 +27,7 @@ public class TokenService {
         return tokenRepository.findAll();
     }
 
-    public Token findById(Long id) {
+    public Optional<Token> findById(Long id) {
         return tokenRepository.findById(id);
     }
 
