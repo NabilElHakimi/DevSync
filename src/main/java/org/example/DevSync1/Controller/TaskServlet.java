@@ -85,7 +85,7 @@ public class TaskServlet extends HttpServlet {
 
         else if ("delete".equals(action)) {
 
-            if(taskService.delete(Long.valueOf(id))) {
+            if(taskService.delete(Long.valueOf(id) , "MANAGER")) {
                 response.sendRedirect("tasks?action=delete&message=Task deleted successfully");
             } else {
                 response.sendRedirect("tasks?action=delete&messageErr=Task not found");

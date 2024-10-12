@@ -1,28 +1,27 @@
 package org.example.DevSync1.service;
 
+import lombok.Value;
 import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
+import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
+import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
-import org.example.DevSync1.repository.UserRepository; // Import the UserRepository if necessary
+import org.example.DevSync1.repository.TokenRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Optional;
 
 public class TaskService {
 
     private final TaskRepository taskRepository = new TaskRepository();
+    private final TokenService tokenService = new TokenService();
 
     public List<Task> getAllTasks() {
-         return  taskRepository.findAll().stream()
-                 .peek(task -> {
-                        if (LocalDate.now().isAfter(task.getDueDate())) {
-                            task.setStatus(Status.Completed);
-                            update(task);
-                        }
-                 }).collect(Collectors.toList());
+         return  taskRepository.findAll();
 
     }
 
@@ -46,9 +45,35 @@ public class TaskService {
         return false;
     }
 
-    public boolean delete(Long id) {
-        return taskRepository.delete(id);
+    public boolean delete(Long id , String role) {
+
+        Task task = taskRepository.findById(id);
+
+        if (task != null) {
+            if (task.getCreatedBy().equals(task.getAssignedTo()) && task.getCreatedBy().getRole().equals(Role.USER)) {
+                return taskRepository.delete(id);
+            }
+            else if (role.equals(Role.MANAGER.toString())) {
+                return taskRepository.delete(id);
+            } else {
+                task.setAccepted(false);
+                Optional<Token> user = new TokenService().findByUserId(task.getAssignedTo().getId());
+                if (user.isPresent() && user.get().getDailyTokens() > 0 && user.get().getMonthUsed() == 0 ) {
+                    user.get().setDailyTokens(user.get().getDailyTokens() - 1);
+                    user.get().setMonthUsed(LocalDate.now().getMonthValue());
+                    if(new TokenRepository().update(user.get())){
+                        task.setAssignedTo(null);
+                        return taskRepository.update(task);
+
+                    };
+                }
+            }
+        }
+
+        return false;
     }
+
+
 
     public User getAssignedUser(Long id) {
         return new UserService().findById(id);
@@ -58,12 +83,6 @@ public class TaskService {
         return new UserService().findAll();
     }
 
-    public boolean addTaskWithTags(Task task, List<Tag> tags) {
-        task.setTags(tags);
-        return taskRepository.save(task);
-    }
-
-
     public List<Tag> getAllTags(){
             return new TagService().findAll();
     }
@@ -72,11 +91,25 @@ public class TaskService {
         return new TagService().findById(id);
     }
 
-    public Task CheckTask(Task task){
+    public void CheckTask(Task task){
         if (LocalDate.now().isAfter(task.getDueDate())) {
             task.setStatus(Status.Completed);
             update(task);
         }
-        return task;
     }
+
+    public boolean changeTask(Long id){
+        Task task = getTaskById(id);
+        if(task != null && !task.isChanged()){
+            tokenService.findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
+                token.setDailyTokens(token.getDailyTokens() - 1);
+                tokenService.update(token);
+            });
+            task.setChanged(true);
+            update(task);
+            return true;
+        }
+        return false;
+    }
+
 }

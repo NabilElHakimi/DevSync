@@ -8,8 +8,12 @@ import java.util.List;
 
 public class TagRepository {
 
+    private EntityManager getEntityManager() {
+        return Config.getEntityManager();
+    }
+
     public boolean save(Tag tag) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         em.persist(tag);
         em.getTransaction().commit();
@@ -18,7 +22,7 @@ public class TagRepository {
     }
 
     public boolean update(Tag tag) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         em.merge(tag);
         em.getTransaction().commit();
@@ -27,7 +31,7 @@ public class TagRepository {
     }
 
     public boolean delete(Long id) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         Tag tag = em.find(Tag.class, id);
         if (tag != null) {
@@ -39,16 +43,16 @@ public class TagRepository {
     }
 
     public List<Tag> findAll() {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
-        List<Tag> tags = em.createQuery("SELECT c FROM Tag c ORDER BY c.id DESC", Tag.class).getResultList();
+        List<Tag> tags = em.createQuery("SELECT t FROM Tag t ORDER BY t.id DESC", Tag.class).getResultList();
         em.getTransaction().commit();
         em.close();
         return tags;
     }
 
     public Tag findById(Long id) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         Tag tag = em.find(Tag.class, id);
         em.close();
         return tag;

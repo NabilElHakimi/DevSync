@@ -101,7 +101,7 @@
                         <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
-                        <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
+                        <td ><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
                         <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
                         <td class="w-25">
                             <%

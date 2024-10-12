@@ -38,7 +38,13 @@
             List<Tag> tags= userService.getTags();
             request.setAttribute("tags", tags);
 
-
+            if(request.getParameter("dislike") != null){
+                if(taskService.changeTask(Long.valueOf(request.getParameter("dislike")))){
+                    response.sendRedirect("user?message=Task Disliked");
+                }else{
+                    response.sendRedirect("user?message=You can't dislike this task");
+                }
+            }
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("user/user.jsp");
             dispatcher.forward(request, response);
@@ -80,10 +86,10 @@
 
             else if ("delete".equals(action)) {
 
-                taskService.delete(Long.valueOf(id));
-                System.err.println("waaaaaaaaa3333333333333b " + id);
+                taskService.delete(Long.valueOf(id) , "USER");
 
                 response.sendRedirect("user?action=delete&message=Task deleted successfully");
+
 
             } else {
                 Task task = new Task();

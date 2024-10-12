@@ -23,13 +23,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        List<Task> tasks = new TaskRepository().findAll();
-
-        tasks.forEach(task -> {
-            task.getTags().forEach(tag -> {
-                System.out.println(tag.getName());
-            });
-        });
+//        new TaskService().delete(1L);
 
 
     }
