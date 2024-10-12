@@ -113,6 +113,7 @@
                 }
               %>
             </td>
+
             <td><span class="badge badge-secondary"><%= task.getStatus() %></span></td>
             <td style="width: 10%">
               <!-- Trigger for Update Modal -->
@@ -121,16 +122,15 @@
                 <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
                   <i class="fas fa-edit"></i>
                 </button>
-
-                <% if(userExist.getToken().getDailyTokens() > 0
-                        && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue() && !task.isChanged()){ %>
-                <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-
-                <% }     %>
-
               <% } %>
+
+              <% if(userExist.getToken().getDailyTokens() > 0
+                      && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue() && !task.isChanged()){ %>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+
+              <% }     %>
 
               <%
 
@@ -139,7 +139,6 @@
                         && task.getAssignedTo().getToken() != null
                         && userExist.getToken().getDailyTokens() > 0
                         && !task.isChanged()
-                        && task.getAssignedTo().getToken().getMonthUsed() == 0
                         && sessionUserId.equals(userExist.getId())) {
               %>
 

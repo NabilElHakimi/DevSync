@@ -57,12 +57,12 @@ public class TaskService {
                 return taskRepository.delete(id);
             } else {
                 task.setAccepted(false);
-
                 Optional<Token> user = new TokenService().findByUserId(task.getAssignedTo().getId());
-                if (user.isPresent() && user.get().getDailyTokens() > 0 && user.get().getMonthUsed() != 0 ) {
+                if (user.isPresent() && user.get().getDailyTokens() > 0 && user.get().getMonthUsed() == 0 ) {
                     user.get().setDailyTokens(user.get().getDailyTokens() - 1);
                     user.get().setMonthUsed(LocalDate.now().getMonthValue());
                     if(new TokenRepository().update(user.get())){
+                        task.setAssignedTo(null);
                         return taskRepository.update(task);
 
                     };
