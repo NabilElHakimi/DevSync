@@ -18,7 +18,7 @@ public class CheckTokenScheduler {
     }
 
     public void start() {
-        scheduler.scheduleAtFixedRate(this::CheckToken, 0, 1, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this::CheckToken, 0, 12, TimeUnit.HOURS);
     }
 
     public void CheckToken(){

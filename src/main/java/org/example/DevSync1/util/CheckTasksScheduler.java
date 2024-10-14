@@ -16,7 +16,7 @@ public class CheckTasksScheduler {
     }
 
     public void start() {
-        scheduler.scheduleAtFixedRate(this::CheckTasks, 0, 1, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this::CheckTasks, 0, 12, TimeUnit.HOURS);
     }
 
     public void CheckTasks(){

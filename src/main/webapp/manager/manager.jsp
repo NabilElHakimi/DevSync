@@ -11,36 +11,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .sidebar a:hover {
-            background-color: #e2e6ea;
-        }
-        .password {
-            cursor: pointer;
-        }
-        .password:hover::after {
-            content: attr(title);
-            position: absolute;
-            background-color: #f9f9f9;
-            padding: 5px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+
 </head>
 <body>
 
@@ -50,7 +21,7 @@
 
         <jsp:include page="component/sidebar.jsp" />
         <!-- Main Content -->
-        <main class="col-md-9">
+        <main class="col-md-12">
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Users List</h1>
 

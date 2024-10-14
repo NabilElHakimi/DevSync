@@ -3,6 +3,7 @@
 <%@ page import="org.example.DevSync1.entity.User" %>
 <%@ page import="org.example.DevSync1.entity.Tag" %>
 <%@ page import="java.time.LocalDate" %>
+<%@ page import="java.util.Objects" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,6 +48,7 @@
     <%-- <jsp:include page="../component/sidebar.jsp" /> --%>
 
     <% User userExist = (User) request.getAttribute("user"); %>
+<%--    <%= sessionUserId %>--%>
 
     <!-- Main Content -->
     <main class="col-md-12">
@@ -118,28 +120,34 @@
             <td style="width: 10%">
               <!-- Trigger for Update Modal -->
 
+              <% if(!task.getDueDate().isBefore(LocalDate.now())){%>
               <% if (task.getCreatedBy().getId().equals(sessionUserId)) { %>
                 <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
                   <i class="fas fa-edit"></i>
                 </button>
               <% } %>
 
-              <% if(userExist.getToken().getDailyTokens() > 0
-                      && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue() && !task.isChanged()){ %>
-              <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
-                <i class="fas fa-trash-alt"></i>
-              </button>
+                <% if (task.getCreatedBy().getId().equals(sessionUserId)
+                        || task.getAssignedTo().getId().equals(sessionUserId)
+                        && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue()
+                        && userExist.getToken().getDailyTokens() > 0
+                ) {
+                %>
 
-              <% }     %>
+                <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+
+                <% }     %>
 
               <%
 
-                if (userExist.getToken() != null
+                if (    userExist.getToken() != null
                         && task.getAssignedTo() != null
-                        && task.getAssignedTo().getToken() != null
                         && userExist.getToken().getDailyTokens() > 0
+                        && sessionUserId.equals(task.getAssignedTo().getId())
                         && !task.isChanged()
-                        && sessionUserId.equals(userExist.getId())) {
+                        && !Objects.equals(task.getCreatedBy().getId(), userExist.getId())) {
               %>
 
               <button class="btn btn-danger btn-sm" onclick="dislikeTask(<%= task.getId() %>)">
@@ -147,10 +155,12 @@
               </button>
 
               <% } %>
+              <% } %>
             </td>
           </tr>
 
           <% } } else { %>
+
           <tr>
             <td colspan="6" class="text-center text-danger">No tasks found.</td>
           </tr>

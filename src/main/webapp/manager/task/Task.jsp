@@ -13,25 +13,6 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .sidebar a:hover {
-            background-color: #e2e6ea;
-        }
-    </style>
 </head>
 <body>
 
@@ -40,7 +21,7 @@
         <!-- Sidebar -->
         <jsp:include page="../component/sidebar.jsp" />
         <!-- Main Content -->
-        <main class="col-md-9">
+        <main class="col-md-12">
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
@@ -101,7 +82,12 @@
                         <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
-                        <td ><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
+                        <td>
+                            <%= task.getAssignedTo() != null
+                                    ? "<span class='badge badge-success'>" + task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName() + "</span>"
+                                    : "<span class='badge badge-danger'>No user assigned</span>"
+                            %>
+                        </td>
                         <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
                         <td class="w-25">
                             <%

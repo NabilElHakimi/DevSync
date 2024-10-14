@@ -92,9 +92,9 @@ public class TaskService {
     }
 
     public void CheckTask(Task task){
-        if (LocalDate.now().isAfter(task.getDueDate())) {
-            task.setStatus(Status.Completed);
-            update(task);
+        if (task.getDueDate().isBefore(LocalDate.now())) {
+            task.setStatus(Status.Cancelled);
+            taskRepository.update(task);
         }
     }
 
