@@ -11,32 +11,14 @@
     <title>Task List</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .sidebar a:hover {
-            background-color: #e2e6ea;
-        }
-    </style>
+    
 </head>
 <body>
 
 <div class="container-fluid">
     <div class="row">
         <jsp:include page="../component/sidebar.jsp" />
-        <main class="col-md-9">
+        <main class="col-md-12">
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
