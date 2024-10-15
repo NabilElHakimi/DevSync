@@ -24,7 +24,11 @@ public class Main {
     public static void main(String[] args) {
 
 //        new TaskService().delete(1L);
+          new TaskService().filterByTag(1L).forEach(t -> {
+                System.out.println(t.getTitle());
+                System.out.println(t.getDescription());
 
+          });
 
     }
 

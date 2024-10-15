@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TaskService {
 
@@ -110,6 +111,13 @@ public class TaskService {
             return true;
         }
         return false;
+    }
+
+
+    public List<Task> filterByTag(Long id) {
+        return getAllTasks().stream()
+                .filter(task -> task.getTags().stream().anyMatch(tag -> Objects.equals(tag.getId(), id)))
+                .collect(Collectors.toList());
     }
 
 }
