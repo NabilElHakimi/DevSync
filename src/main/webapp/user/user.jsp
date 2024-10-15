@@ -127,7 +127,8 @@
                 </button>
               <% } %>
 
-                <% if (task.getCreatedBy().getId().equals(sessionUserId)
+                <% if (
+                        task.getCreatedBy().getId().equals(sessionUserId)
                         || task.getAssignedTo().getId().equals(sessionUserId)
                         && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue()
                         && userExist.getToken().getDailyTokens() > 0

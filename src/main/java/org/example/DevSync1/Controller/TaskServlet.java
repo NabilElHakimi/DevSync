@@ -108,7 +108,7 @@ public class TaskServlet extends HttpServlet {
             task.setDescription(description);
             task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
             task.setDueDate(LocalDate.parse(dueDateStr));
-            task.setStatus(Status.InProgress);
+            task.setStatus(Status.Pending);
             if(!taskService.save(task)){
                 response.sendRedirect("tasks?action=add&messageErr=Task due date should be greater than today");
             }

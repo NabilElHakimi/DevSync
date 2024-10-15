@@ -75,4 +75,18 @@ public class TaskRepository {
         em.close();
         return task;
     }
+
+    public List<Task> findByTag(Long tagId) {
+        EntityManager em = getEntityManager();
+
+        List<Task> tasks = em.createQuery(
+                        "SELECT t FROM Task t JOIN t.tags tag WHERE tag.id = :tagId", Task.class)
+                .setParameter("tagId", tagId)
+                .getResultList();
+
+        em.close();
+        return tasks;
+    }
+
+
 }
