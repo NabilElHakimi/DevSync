@@ -1,6 +1,5 @@
 package org.example.DevSync1.service;
 
-import lombok.Value;
 import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
@@ -14,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class TaskService {
@@ -51,7 +51,7 @@ public class TaskService {
         Task task = taskRepository.findById(id);
 
         if (task != null) {
-            if (task.getCreatedBy().equals(task.getAssignedTo()) && task.getCreatedBy().getRole().equals(Role.USER)) {
+            if (task.getAssignedTo() != null && task.getCreatedBy().equals(task.getAssignedTo()) && task.getCreatedBy().getRole().equals(Role.USER)) {
                 return taskRepository.delete(id);
             }
             else if (role.equals(Role.MANAGER.toString())) {
@@ -64,6 +64,7 @@ public class TaskService {
                     user.get().setMonthUsed(LocalDate.now().getMonthValue());
                     if(new TokenRepository().update(user.get())){
                         task.setAssignedTo(null);
+                        task.setChanged(0);
                         return taskRepository.update(task);
 
                     };
@@ -99,25 +100,48 @@ public class TaskService {
         }
     }
 
-    public boolean changeTask(Long id){
-        Task task = getTaskById(id);
-        if(task != null && !task.isChanged()){
-            tokenService.findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
-                token.setDailyTokens(token.getDailyTokens() - 1);
-                tokenService.update(token);
-            });
-            task.setChanged(true);
-            update(task);
+    public boolean changeTask(Task task, int action , String role) {
+        Task taskForChange = getTaskById(task.getId());
+
+        if(taskForChange != null){
+            if(role.equals(Role.USER.toString()) && task.getChanged() >= 0){
+                tokenService.findByUserId(task.getAssignedTo().getId()).ifPresent(token -> {
+                    token.setDailyTokens(token.getDailyTokens() -  1);
+                    tokenService.update(token);
+                    taskForChange.setChanged(action);
+                    update(taskForChange);
+
+                });
+
+                }else if(role.equals(Role.MANAGER.toString())){
+
+                taskForChange.setAssignedTo(task.getAssignedTo());
+                taskForChange.setChanged(action);
+                update(taskForChange);
+                return true;
+            }
+
             return true;
+
         }
+
         return false;
     }
-
 
     public List<Task> filterByTag(Long id) {
         return getAllTasks().stream()
                 .filter(task -> task.getTags().stream().anyMatch(tag -> Objects.equals(tag.getId(), id)))
                 .collect(Collectors.toList());
+    }
+
+    public double taskStatistic(Status status) {
+        List<Task> tasks = getAllTasks();
+
+        long nbrCompletedTasks = tasks.stream()
+                .filter(task -> task.getStatus().equals(status))
+                .count();
+
+        return (double) nbrCompletedTasks * 100 / tasks.size();
     }
 
 }

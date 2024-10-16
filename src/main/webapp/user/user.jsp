@@ -13,15 +13,17 @@
   <title>Task List</title>
   <!-- Bootstrap CSS -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome for icons -->
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
+
     .sidebar {
       height: 100vh;
       background-color: #f8f9fa;
       padding: 20px;
       box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     }
+
     .sidebar a {
       display: block;
       padding: 10px;
@@ -30,9 +32,11 @@
       margin-bottom: 10px;
       border-radius: 5px;
     }
+
     .sidebar a:hover {
       background-color: #e2e6ea;
     }
+
   </style>
 </head>
 <body>
@@ -95,70 +99,76 @@
           %>
 
           <tr>
-            <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName() + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
+            <td><%= task.getCreatedBy() != null ? task.getCreatedBy().getFirstName() + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
             <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
             <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
-            <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
-            <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
+
+            <td>
+              <%= (task.getAssignedTo() != null)
+                      ? task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName()
+                      : ""
+              %>
+              <% if (task.getAssignedTo() == null) { %>
+              <span class="badge badge-danger">No Assigned User</span>
+              <% } %>
+            </td>
+
+            <td style="width: 10%">
+              <%= task.getDueDate() != null ? task.getDueDate() : "N/A" %>
+            </td>
+
             <td class="w-25">
               <%
                 if (task.getTags() != null && !task.getTags().isEmpty()) {
                   for (Tag tag : task.getTags()) {
               %>
-              <span class="badge badge-primary"><%= tag.getName() %></span>
+              <span class="badge bg-primary"><%= tag.getName() %></span>
               <%
                 }
               } else {
               %>
-              <span class="badge badge-warning">No Tags</span>
+              <span class="badge bg-warning">No Tags</span>
               <%
                 }
               %>
             </td>
 
-            <td><span class="badge badge-secondary"><%= task.getStatus() %></span></td>
+            <td><span class="badge bg-secondary"><%= task.getStatus() %></span></td>
+
             <td style="width: 10%">
               <!-- Trigger for Update Modal -->
-
-              <% if(!task.getDueDate().isBefore(LocalDate.now())){%>
+              <% if (!task.getDueDate().isBefore(LocalDate.now())) { %>
               <% if (task.getCreatedBy().getId().equals(sessionUserId)) { %>
-                <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
-                  <i class="fas fa-edit"></i>
-                </button>
+              <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>')">
+                <i class="fas fa-edit"></i>
+              </button>
               <% } %>
 
-                <% if (
-                        task.getCreatedBy().getId().equals(sessionUserId)
-                        || task.getAssignedTo().getId().equals(sessionUserId)
-                        && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue()
-                        && userExist.getToken().getDailyTokens() > 0
-                ) {
-                %>
-
-                <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-
-                <% }     %>
-
-              <%
-
-                if (    userExist.getToken() != null
-                        && task.getAssignedTo() != null
-                        && userExist.getToken().getDailyTokens() > 0
-                        && sessionUserId.equals(task.getAssignedTo().getId())
-                        && !task.isChanged()
-                        && !Objects.equals(task.getCreatedBy().getId(), userExist.getId())) {
+              <% if (task.getCreatedBy().getId().equals(sessionUserId)
+                      || (task.getAssignedTo() != null && task.getAssignedTo().getId().equals(sessionUserId))
+                      && userExist.getToken().getMonthUsed() != LocalDate.now().getMonthValue()
+                      && userExist.getToken().getDailyTokens() > 0) {
               %>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete(<%= task.getId() %>, '<%= task.getTitle() %>')">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+              <% } %>
 
+              <% if (userExist.getToken() != null
+                      && task.getAssignedTo() != null
+                      && userExist.getToken().getDailyTokens() > 0
+                      && sessionUserId.equals(task.getAssignedTo().getId())
+                      && task.getChanged() == 0
+                      && !Objects.equals(task.getCreatedBy().getId(), userExist.getId())) {
+              %>
               <button class="btn btn-danger btn-sm" onclick="dislikeTask(<%= task.getId() %>)">
                 <i class="fas fa-thumbs-down"></i>
               </button>
-
               <% } %>
               <% } %>
             </td>
           </tr>
+
 
           <% } } else { %>
 

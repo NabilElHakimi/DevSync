@@ -9,6 +9,7 @@
     import org.example.DevSync1.entity.Tag;
     import org.example.DevSync1.entity.Task;
     import org.example.DevSync1.entity.User;
+    import org.example.DevSync1.enums.Role;
     import org.example.DevSync1.enums.Status;
     import org.example.DevSync1.service.TaskService;
     import org.example.DevSync1.service.UserService;
@@ -39,7 +40,10 @@
             request.setAttribute("tags", tags);
 
             if(request.getParameter("dislike") != null){
-                if(taskService.changeTask(Long.valueOf(request.getParameter("dislike")))){
+                Task task = new Task();
+                task.setId(Long.valueOf(request.getParameter("dislike")));
+                task.setAssignedTo(user);
+                if(taskService.changeTask(task , -1 , Role.USER.toString())){
                     response.sendRedirect("user?message=Task Disliked");
                 }else{
                     response.sendRedirect("user?message=You can't dislike this task");
@@ -85,7 +89,7 @@
             }
 
             else if ("delete".equals(action)) {
-
+                Task task = new Task();
                 taskService.delete(Long.valueOf(id) , "USER");
 
                 response.sendRedirect("user?action=delete&message=Task deleted successfully");

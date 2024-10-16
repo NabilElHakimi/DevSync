@@ -1,5 +1,6 @@
 <%@ page import="org.example.DevSync1.entity.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.Month" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +51,7 @@
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Tokens Available</th>
+                        <th>Month Used</th>
                         <th>Role</th>
                         <th>Actions</th>
                     </tr>
@@ -66,6 +68,7 @@
                         <td><%= (user.getLastName() != null) ? user.getLastName() : "N/A" %></td>
                             <td><%= (user.getEmail() != null) ? user.getEmail() : "N/A" %></td>
                         <td><%= (user.getToken() != null) ? user.getToken().getDailyTokens() : "N/A" %></td>
+                        <td><%= (user.getToken() != null && user.getToken().getMonthUsed() != 0) ? Month.of(user.getToken().getMonthUsed()) : "" %></td>
 
                         <td><%= (user.getRole() != null) ? user.getRole() : "N/A" %></td>
 

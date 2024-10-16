@@ -42,7 +42,8 @@ public class Task {
     )
     private List<Tag> tags = new ArrayList<>();
 
-    private boolean changed = false;
     private boolean accepted = true ;
-    
+
+    private int changed = 0;
+
 }
