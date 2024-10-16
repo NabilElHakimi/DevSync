@@ -87,6 +87,9 @@
                         </div>
                     </div>
 
+
+
+
                     <div class="col-md-6">
                         <h5>Canceled Tasks: <%= request.getAttribute("CanceledStatic") %> %</h5>
                         <div class="progress">
