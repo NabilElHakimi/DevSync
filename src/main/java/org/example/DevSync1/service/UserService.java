@@ -78,9 +78,5 @@ public class UserService {
         }
     }
 
-    public boolean ChangeTask(Long id){
-        new TaskService().changeTask(id);
-        return true;
-    }
     
 }

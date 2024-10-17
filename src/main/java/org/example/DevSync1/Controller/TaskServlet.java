@@ -28,13 +28,36 @@ public class TaskServlet extends HttpServlet {
     private final TaskService taskService = new TaskService();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Task> tasks = taskService.getAllTasks();
+
+        String filterParam = request.getParameter("filter");
+        long tagId = 0;
+        if (filterParam != null && !filterParam.isEmpty()) {
+                tagId = Long.parseLong(filterParam);
+        }
+
+        List<Task> tasks;
+        if (tagId != 0) {
+            tasks = taskService.filterByTag(tagId);
+        } else {
+            tasks = taskService.getAllTasks();
+        }
         request.setAttribute("tasks", tasks);
+
 
         List<User> users = taskService.getAllUsers();
         List<User> filteredUsers = users.stream()
                 .filter(user -> user.getRole().equals(Role.USER))
                 .collect(Collectors.toList());
+
+        double PendingStatic = Math.round(taskService.taskStatistic(Status.Pending));
+        double CompletedStatic = Math.round(taskService.taskStatistic(Status.Completed));
+        double CanceledStatic = Math.round(taskService.taskStatistic(Status.Cancelled));
+        double InProgressStatic = Math.round(taskService.taskStatistic(Status.InProgress));
+
+        request.setAttribute("PendingStatic" , PendingStatic);
+        request.setAttribute("CanceledStatic" , CanceledStatic);
+        request.setAttribute("CompletedStatic" , CompletedStatic);
+        request.setAttribute("InProgressStatic" , InProgressStatic);
 
         request.setAttribute("users", filteredUsers);
 
@@ -49,7 +72,6 @@ public class TaskServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         String id = request.getParameter("id");
-
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String dueDateStr = request.getParameter("dueDate");
@@ -70,7 +92,6 @@ public class TaskServlet extends HttpServlet {
                         }
                     }));
 
-
             task.setCreatedBy(taskService.getAssignedUser(Long.valueOf(idParam)));
             task.setStatus(Status.valueOf(status));
             task.setId(Long.valueOf(id));
@@ -90,8 +111,19 @@ public class TaskServlet extends HttpServlet {
             } else {
                 response.sendRedirect("tasks?action=delete&messageErr=Task not found");
             }
+        } else if ("changeIt".equals(action)) {
+            Task task = new Task();
 
+//            task.setCreatedBy(taskService.getAssignedUser(Long.valueOf(idParam)));
+            task.setId(Long.valueOf(id));
 
+            task.setAssignedTo(taskService.getAssignedUser(Long.valueOf(assignedToId)));
+
+            if(taskService.changeTask(task , 1 , "MANAGER")) {
+                response.sendRedirect("tasks?action=changeIt&message=Task changed successfully");
+            } else {
+                response.sendRedirect("tasks?action=changeIt&messageErr=Task not found");
+            }
         } else {
             Task task = new Task();
 

@@ -20,7 +20,7 @@
         <jsp:include page="../component/sidebar.jsp" />
         <main class="col-md-12">
             <div class="container mt-5">
-                <h1 class="text-primary text-center mb-4">Tasks List</h1>
+                <h1 class="text-primary text-center mb-4">Tags List</h1>
 
                 <%
                     String message = request.getParameter("message");
