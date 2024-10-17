@@ -20,8 +20,23 @@ public class UserService {
     private final TokenService tokenService = new TokenService();
 
     public boolean save(User user) {
+        if (isUserInvalid(user)) {
+            throw new IllegalArgumentException("User object is null or contains empty/null attributes");
+        }
         return userRepository.save(user);
     }
+
+    private boolean isUserInvalid(User user) {
+        if (user == null) {
+            return true;
+        }
+        return user.getFirstName() == null || user.getFirstName().isEmpty() ||
+                user.getLastName() == null || user.getLastName().isEmpty() ||
+                user.getEmail() == null || user.getEmail().isEmpty() ||
+                user.getPassword() == null || user.getPassword().isEmpty() ||
+                user.getRole() == null;
+    }
+
 
     public boolean update(User user) {
         return userRepository.update(user);
