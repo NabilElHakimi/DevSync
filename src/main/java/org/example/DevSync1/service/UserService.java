@@ -5,13 +5,12 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
-import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserService {
@@ -33,32 +32,20 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll().stream().peek(user -> {
-
-            user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
-
-            if(user.getToken() == null && user.getRole().equals(Role.USER)){
-
-                Token token = new Token();
-                token.setUser(user);
-                token.setDailyTokens(2);
-                token.setUpdatedAt(LocalDate.now().atStartOfDay());
-                tokenService.save(token);
-
-            }else {
-                if(user.getRole().equals(Role.USER) && !user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
-
-                        user.getToken().setDailyTokens(2);
-                        user.getToken().setUpdatedAt(LocalDate.now().atStartOfDay());
-                        tokenService.update(user.getToken());
-
-                    }
-            }
-        }).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .peek(this::getTokenUser).collect(Collectors.toList());
     }
 
-    public User findById(Long id){
-        return userRepository.findById(id);
+    public User findById(Long id) {
+        Optional<User> getUser = userRepository.findById(id);
+
+        if (getUser.isPresent()) {
+            User user = getUser.get();
+            getTokenUser(user);
+            return user;
+        } else {
+            throw new NoSuchElementException("User with id " + id + " not found");
+        }
     }
 
     public List<Task> getTasks(){
@@ -69,7 +56,27 @@ public class UserService {
         return new TagService().findAll();
     }
 
+    public void getTokenUser(User user){
+        user.setToken(tokenService.findByUserId(user.getId()).orElse(null));
 
+        if(user.getToken() == null && user.getRole().equals(Role.USER)){
 
+            Token token = new Token();
+            token.setUser(user);
+            token.setDailyTokens(2);
+            token.setUpdatedAt(LocalDate.now().atStartOfDay());
+            tokenService.save(token);
 
+        }else {
+            if(user.getRole().equals(Role.USER) && !user.getToken().getUpdatedAt().equals(LocalDate.now().atStartOfDay())){
+
+                user.getToken().setDailyTokens(2);
+                user.getToken().setUpdatedAt(LocalDate.now().atStartOfDay());
+                tokenService.update(user.getToken());
+
+            }
+        }
+    }
+
+    
 }

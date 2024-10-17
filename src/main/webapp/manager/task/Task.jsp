@@ -13,25 +13,6 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .sidebar a:hover {
-            background-color: #e2e6ea;
-        }
-    </style>
 </head>
 <body>
 
@@ -40,7 +21,10 @@
         <!-- Sidebar -->
         <jsp:include page="../component/sidebar.jsp" />
         <!-- Main Content -->
-        <main class="col-md-9">
+        <main class="col-md-12">
+
+
+
             <div class="container mt-5">
                 <h1 class="text-primary text-center mb-4">Tasks List</h1>
 
@@ -73,7 +57,78 @@
                     }
                 %>
 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h5>Pending Tasks: <%= request.getAttribute("PendingStatic") %> %</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: <%= request.getAttribute("PendingStatic") %>%;" aria-valuenow="<%= request.getAttribute("PendingStatic") %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= request.getAttribute("PendingStatic") %>%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>In Progress Tasks: <%= request.getAttribute("InProgressStatic") %> %</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <%= request.getAttribute("InProgressStatic") %>%;" aria-valuenow="<%= request.getAttribute("InProgressStatic") %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= request.getAttribute("InProgressStatic") %>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h5>Completed Tasks: <%= request.getAttribute("CompletedStatic") %> %</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: <%= request.getAttribute("CompletedStatic") %>%;" aria-valuenow="<%= request.getAttribute("CompletedStatic") %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= request.getAttribute("CompletedStatic") %>%
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-md-6">
+                        <h5>Canceled Tasks: <%= request.getAttribute("CanceledStatic") %> %</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: <%= request.getAttribute("CanceledStatic") %>%;" aria-valuenow="<%= request.getAttribute("CanceledStatic") %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= request.getAttribute("CanceledStatic") %>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <br>
+                <br>
+
                 <button class="btn btn-success" style="margin-bottom: 2%" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
+
+                <form action="tasks" method="get" class="form-group">
+                    <label for="tagSelect" class="form-label">Select a Tag:</label>
+                    <select name="filter" id="tagSelect" class="form-control">
+                        <option value="0" disabled selected>Filter By Tags :</option>
+                        <%
+                            Long selectedTagId = request.getParameter("filter") != null ? Long.parseLong(request.getParameter("filter")) : 0L;
+                            List<Tag> tags = (List<Tag>) request.getAttribute("tags");
+
+                            if (tags != null && !tags.isEmpty()) {
+                                for (Tag tag : tags) {
+                                    boolean isSelected = tag.getId() == selectedTagId;
+                        %>
+                        <option value="<%= tag.getId() %>" <%= isSelected ? "selected" : "" %>><%= tag.getName() %></option>
+                        <%
+                                }
+                            }
+                        %>
+                    </select>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    <a href="tasks" class="btn btn-outline-secondary mt-3">Remove Filter</a>
+
+                </form>
+
 
                 <table class="table table-bordered table-hover">
                     <thead class="thead-dark">
@@ -96,12 +151,41 @@
                             for (Task task : tasks) {
                     %>
 
-<%--                    ===============================--%>
                     <tr>
-                        <td><%= task.getAssignedTo() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
+                        <td><%= task.getCreatedBy() != null ? task.getCreatedBy().getFirstName()  + " " + task.getCreatedBy().getLastName() : "N/A" %></td>
                         <td><%= task.getTitle() != null ? task.getTitle() : "N/A" %></td>
                         <td><%= task.getDescription() != null ? task.getDescription() : "N/A" %></td>
-                        <td><%= task.getAssignedTo() != null ? task.getAssignedTo().getFirstName()  + " " + task.getAssignedTo().getLastName() : "N/A" %></td>
+                        <td class="w-25">
+                            <form action="tasks" method="post" class="d-flex align-items-center">
+                                <input type="hidden" name="id" value="<%= task.getId() %>">
+                                <input type="hidden" name="action" value="changeIt">
+<%--                                <input ty > --%>
+                                 <select class="form-control" name="assignedTo" required style="flex-grow: 1;">
+                                    <option value="">Select a User</option>
+                                    <%
+                                        List<User> users = (List<User>) request.getAttribute("users");
+                                        if (users != null) {
+                                            for (User user : users) {
+                                                boolean isSelected = task.getAssignedTo() != null && task.getAssignedTo().getId().equals(user.getId());
+                                    %>
+                                    <option value="<%= user.getId() %>" <%= isSelected ? "selected" : "" %>><%= user.getFirstName() + " " + user.getLastName() %></option>
+                                    <%
+                                        }
+                                    } else {
+                                    %>
+                                    <option value="">No users available</option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+
+                                <% if (task.getChanged() == -1 || task.getAssignedTo() == null ){ %>
+                                    <button  type="submit" class="btn btn-sm btn-primary ml-2">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                <% } %>
+                            </form>
+                        </td>
                         <td style="width: 10%"><%= task.getDueDate() != null ? task.getDueDate() : "N/A" %></td>
                         <td class="w-25">
                             <%
@@ -117,10 +201,10 @@
                             <%
                                 }
                             %>
+
                         </td>
                         <td><span class="badge badge-secondary"><%= task.getStatus() %></span></td>
-                        <td style="width: 10%">
-                            <!-- Trigger for Update Modal -->
+                        <td style="width: 10%" class="flex w-25">
                             <button class="btn btn-primary btn-sm" onclick="openUpdateModal(<%= task.getId() %>, '<%= task.getTitle() %>', '<%= task.getDescription() %>', '<%= task.getDueDate() %>', '<%= task.getAssignedTo() != null ? task.getAssignedTo().getId() : "" %>')">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -131,7 +215,6 @@
                         </td>
                     </tr>
 
-<%--                    ============================================--%>
 
                     <% } } else { %>
                     <tr>
@@ -334,6 +417,32 @@
                         </div>
                     </div>
                 </div>
+
+
+
+                <div class="modal fade" id="confirmAccepteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmAccepteModal">Confirm Accept Change</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to Accept Change To <span id="AcceptTaskName"></span>?
+                            </div>
+                            <div class="modal-footer">
+                                <form id="AcceptTaskForm" action="tasks" method="post">
+                                    <input type="hidden" name="id" id="AcceptTaskId">
+                                    <input type="hidden" value="changeIt" name="action">
+                                    <button type="submit" class="btn btn-danger">Accept</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -357,6 +466,12 @@
         document.getElementById('deleteTaskId').value = id;
         document.getElementById('deleteTaskName').innerText = name;
         $('#confirmDeleteModal').modal('show');
+    }
+
+    function confirmAccept(id, name) {
+        document.getElementById('AcceptTaskId').value = id;
+        document.getElementById('AcceptTaskName').innerText = name;
+        $('#confirmAccepteModal').modal('show');
     }
 </script>
 </body>

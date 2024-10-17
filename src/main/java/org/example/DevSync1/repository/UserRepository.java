@@ -5,6 +5,7 @@ import org.example.DevSync1.config.Config;
 import org.example.DevSync1.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserRepository {
 
@@ -19,9 +20,7 @@ public class UserRepository {
 
     public List<User> findAll() {
         EntityManager em = Config.getEntityManager();
-        em.getTransaction().begin();
         List<User> users = em.createQuery("SELECT u FROM User u ORDER BY u.id DESC", User.class).getResultList();
-        em.getTransaction().commit();
         em.close();
         return users;
     }
@@ -32,10 +31,13 @@ public class UserRepository {
         User user = em.find(User.class, id);
         if (user != null) {
             em.remove(user);
+            em.getTransaction().commit();
+            em.close();
+            return true;
         }
-        em.getTransaction().commit();
+        em.getTransaction().rollback();
         em.close();
-        return true;
+        return false;
     }
 
     public boolean update(User user) {
@@ -47,10 +49,10 @@ public class UserRepository {
         return true;
     }
 
-    public User findById(Long id) {
+    public Optional<User> findById(Long id) {
         EntityManager em = Config.getEntityManager();
         User user = em.find(User.class, id);
         em.close();
-        return user;
+        return Optional.ofNullable(user);
     }
 }

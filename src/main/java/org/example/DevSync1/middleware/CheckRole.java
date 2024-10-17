@@ -12,6 +12,7 @@ import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(name = "checkRole" , urlPatterns = "/checkRole")
 public class CheckRole extends HttpServlet {
@@ -20,9 +21,9 @@ public class CheckRole extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idParam = request.getParameter("id");
-        User user = userRepository.findById(Long.valueOf(idParam));
+        Optional<User> user = userRepository.findById(Long.valueOf(idParam));
 
-        if (user != null) {
+        if (user.isPresent()) {
 
             request.getSession().setAttribute("UserId", idParam);
 
@@ -30,9 +31,9 @@ public class CheckRole extends HttpServlet {
             String sessionUserId = (String) session.getAttribute("UserId");
 
             if (sessionUserId != null && sessionUserId.equals(idParam)) {
-                if (user.getRole() == Role.MANAGER) {
+                if (user.get().getRole() == Role.MANAGER) {
                     response.sendRedirect("manager");
-                } else if (user.getRole() == Role.USER) {
+                } else if (user.get().getRole() == Role.USER) {
                     request.setAttribute("user", user);
                     response.sendRedirect("user");
                 }

@@ -9,8 +9,12 @@ import java.util.List;
 
 public class TaskRepository {
 
+    private EntityManager getEntityManager() {
+        return Config.getEntityManager();
+    }
+
     public boolean save(Task task) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
 
         if (task.getCreatedBy() != null) {
@@ -24,7 +28,7 @@ public class TaskRepository {
     }
 
     public boolean update(Task task) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
 
         if (task.getCreatedBy() != null) {
@@ -37,42 +41,33 @@ public class TaskRepository {
         return true;
     }
 
-        public boolean delete(Long id) {
-            EntityManager em = Config.getEntityManager();
-            em.getTransaction().begin();
-            Task task = em.find(Task.class, id);
-            if (task != null) {
-                em.remove(task);
-            }
-            em.getTransaction().commit();
-            em.close();
-            return true;
+    public boolean delete(Long id) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Task task = em.find(Task.class, id);
+        if (task != null) {
+            em.remove(task);
         }
+        em.getTransaction().commit();
+        em.close();
+        return true;
+    }
 
     public List<Task> findAll() {
-        EntityManager em = Config.getEntityManager();
-        em.getTransaction().begin();
+        EntityManager em = getEntityManager();
         List<Task> tasks = em.createQuery("SELECT t FROM Task t ORDER BY t.id DESC", Task.class).getResultList();
-        em.getTransaction().commit();
         em.close();
         return tasks;
     }
 
     public Task findById(Long id) {
-        EntityManager em = Config.getEntityManager();
+        EntityManager em = getEntityManager();
         Task task = em.find(Task.class, id);
         em.close();
         return task;
     }
 
-    public Task gitTaskWithTags(Long id) {
-        EntityManager em = Config.getEntityManager();
-        em.getTransaction().begin();
-        Task task = em.createQuery("SELECT t FROM Task t JOIN FETCH t.tags WHERE t.id = :id", Task.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        em.getTransaction().commit();
-        em.close();
-        return task;
-    }
+
+
+
 }

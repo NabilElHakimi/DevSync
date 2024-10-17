@@ -21,7 +21,7 @@ public class Task {
     private User createdBy;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to", nullable = false)
+    @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
     @Enumerated(EnumType.STRING)
@@ -41,5 +41,9 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
+
+    private boolean accepted = true ;
+
+    private int changed = 0;
 
 }

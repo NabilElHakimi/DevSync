@@ -1,5 +1,6 @@
 package org.example.DevSync1;
 
+import lombok.Value;
 import org.example.DevSync1.entity.Tag;
 import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
@@ -17,19 +18,19 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
-        List<Task> tasks = new TaskRepository().findAll();
+//        new TaskService().delete(1L);
+        /*Task task =   new TaskService().getTaskById(1L);
+        System.out.println(task.getCreatedBy().getFirstName());*/
 
-        tasks.forEach(task -> {
-            task.getTags().forEach(tag -> {
-                System.out.println(tag.getName());
-            });
-        });
+
+//        System.out.println(new TaskService().taskStatistic() + " %");
 
 
     }
