@@ -35,6 +35,7 @@ public class UserRepository {
             em.close();
             return true;
         }
+
         em.getTransaction().rollback();
         em.close();
         return false;

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.repository.UserRepository;
+import org.example.DevSync1.service.TokenService;
 import org.example.DevSync1.service.UserService;
 import org.example.DevSync1.util.HashPassword;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 @WebServlet(name = "users" , urlPatterns = "/users")
 public class UsersServlet extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService = new UserService(new UserRepository(),new TokenService());
 
     private HashPassword hashPassword = new HashPassword();
     @Override

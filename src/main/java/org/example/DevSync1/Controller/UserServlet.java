@@ -11,7 +11,9 @@
     import org.example.DevSync1.entity.User;
     import org.example.DevSync1.enums.Role;
     import org.example.DevSync1.enums.Status;
+    import org.example.DevSync1.repository.UserRepository;
     import org.example.DevSync1.service.TaskService;
+    import org.example.DevSync1.service.TokenService;
     import org.example.DevSync1.service.UserService;
 
     import java.io.IOException;
@@ -23,7 +25,7 @@
     @WebServlet(name = "user" , urlPatterns = "user")
     public class UserServlet extends HttpServlet {
 
-        private final UserService userService   = new UserService();
+        private final UserService userService = new UserService(new UserRepository(),new TokenService());
         private final TaskService taskService = new TaskService();
 
         @Override

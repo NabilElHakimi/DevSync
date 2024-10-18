@@ -8,6 +8,7 @@ import org.example.DevSync1.enums.Role;
 import org.example.DevSync1.enums.Status;
 import org.example.DevSync1.repository.TaskRepository;
 import org.example.DevSync1.repository.TokenRepository;
+import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,11 +79,11 @@ public class TaskService {
 
 
     public User getAssignedUser(Long id) {
-        return new UserService().findById(id);
+        return new UserService(new UserRepository(),new TokenService()).findById(id);
     }
 
     public List<User> getAllUsers() {
-        return new UserService().findAll();
+        return new UserService(new UserRepository(),new TokenService()).findAll();
     }
 
     public List<Tag> getAllTags(){

@@ -12,6 +12,7 @@ import org.example.DevSync1.repository.TokenRepository;
 import org.example.DevSync1.repository.UserRepository;
 import org.example.DevSync1.service.TagService;
 import org.example.DevSync1.service.TaskService;
+import org.example.DevSync1.service.TokenService;
 import org.example.DevSync1.service.UserService;
 import org.example.DevSync1.util.HashPassword;
 import org.mindrot.jbcrypt.BCrypt;
@@ -33,6 +34,7 @@ public class Main {
 //        System.out.println(new TaskService().taskStatistic() + " %");
 
 
+        System.out.println(new UserService(new UserRepository(),new TokenService()).findById(22L));
     }
 
 }

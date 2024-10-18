@@ -1,5 +1,7 @@
 package org.example.DevSync1.util;
 
+import org.example.DevSync1.repository.UserRepository;
+import org.example.DevSync1.service.TokenService;
 import org.example.DevSync1.service.UserService;
 
 import java.util.concurrent.Executors;
@@ -14,7 +16,7 @@ public class CheckTokenScheduler {
     private final UserService user;
 
     public CheckTokenScheduler() {
-        this.user = new UserService();
+        this.user = new UserService(new UserRepository(),new TokenService());
     }
 
     public void start() {

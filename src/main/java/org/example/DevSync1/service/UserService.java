@@ -5,31 +5,39 @@ import org.example.DevSync1.entity.Task;
 import org.example.DevSync1.entity.Token;
 import org.example.DevSync1.entity.User;
 import org.example.DevSync1.enums.Role;
+import org.example.DevSync1.exceptions.UserIDCannotBeNull;
+import org.example.DevSync1.exceptions.UserObjectIsNull;
 import org.example.DevSync1.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
 
-    private final TokenService tokenService = new TokenService();
+    private final TokenService tokenService;
+
+    public UserService(UserRepository userRepository, TokenService tokenService) {
+        this.userRepository = userRepository;
+        this.tokenService = tokenService;
+    }
 
     public boolean save(User user) {
         if (isUserInvalid(user)) {
-            throw new IllegalArgumentException("User object is null or contains empty/null attributes");
+            throw new UserObjectIsNull();
         }
         return userRepository.save(user);
     }
 
+
     private boolean isUserInvalid(User user) {
-        if (user == null) {
+        if (user == null ) {
             return true;
         }
+
         return user.getFirstName() == null || user.getFirstName().isEmpty() ||
                 user.getLastName() == null || user.getLastName().isEmpty() ||
                 user.getEmail() == null || user.getEmail().isEmpty() ||
@@ -37,12 +45,19 @@ public class UserService {
                 user.getRole() == null;
     }
 
-
     public boolean update(User user) {
+
+        if (isUserInvalid(user)) {
+            throw new UserObjectIsNull();
+        }
+
         return userRepository.update(user);
     }
 
     public boolean delete(Long id) {
+        if(id == null){
+            throw new UserIDCannotBeNull();
+        }
         return userRepository.delete(id);
     }
 
@@ -52,6 +67,10 @@ public class UserService {
     }
 
     public User findById(Long id) {
+        if(id == null){
+            throw new UserIDCannotBeNull();
+        }
+
         Optional<User> getUser = userRepository.findById(id);
 
         if (getUser.isPresent()) {
@@ -59,7 +78,7 @@ public class UserService {
             getTokenUser(user);
             return user;
         } else {
-            throw new NoSuchElementException("User with id " + id + " not found");
+            throw new UserIDCannotBeNull();
         }
     }
 
@@ -93,5 +112,6 @@ public class UserService {
         }
     }
 
-    
+
 }
+
